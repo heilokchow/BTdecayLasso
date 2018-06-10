@@ -6,7 +6,7 @@ Author: Zhou Yunpeng (Michael)
 Maintainer: Zhou Yunpeng <michael_zhou_hku@gmail.com>
 Description: Bradley-Terry Model with Exponential Decayed Likelihood function and Lasso Penalty
 Imports: optimr
-License: 
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
