@@ -1,3 +1,4 @@
+#' @export
 BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 0, fixed = 1, thersh = 1e-5, iter = 100) {
   u <- decay.rate
   n <- nrow(ability) - 1
