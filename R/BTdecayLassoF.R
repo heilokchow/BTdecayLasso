@@ -1,4 +1,5 @@
-BTdecayLasso <- function(dataframe, ability, penalty, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
+#' @export
+BTdecayLassoF <- function(dataframe, ability, penalty, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
   df <- dataframe
   n <- nrow(ability) - 1
   df[, 5] <- df[, 5] - df[1, 5]
