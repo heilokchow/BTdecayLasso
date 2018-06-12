@@ -21,7 +21,23 @@
 #' where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
 #' \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score.
 #' This likelihood function is optimized using L-BFGS-B method with package \bold{optimr}.
-#' @return The estimated abilities.
+#' @return List contains estimated abilities and convergent code, 0 stands for convergency reaches,
+#' 1 stands for convergency not reaches. If 1 is returned, we suggest that decay rate should be set lower.
+#' Bradley-Terry model fails to model the situation when a team wins or loses in all matches.
+#' If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also casues the same problem.
+#' \item{ability}{Estimated ability scores}
+#' \item{convergence}{0 stands for convergent, 1 stands for not convergent}
+#' @examples 
+#' ##Initializing Dataframe
+#' x <- BTdataframe(NFL2010)
+#' 
+#' ##Standard Bradley-Terry Model optimization
+#' y <- BTdecay(x$df, x$ability, decay.rate = 0, fixed = x$worstTeam)
+#' 
+#' ##Dynamic approximation of current ability scores using exponetial decayed likelihood.
+#' ##If we take decay.rate = 0.005
+#' ##Match happens one month before will weight exp(-0.15)=0.86 on log-likelihood function
+#' z <- BTdecay(x$df, x$ability, decay.rate = 0, fixed = x$worstTeam)
 #' @import optimr
 #' @export
 

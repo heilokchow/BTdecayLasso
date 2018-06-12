@@ -1,4 +1,4 @@
-penaltyAmount <- function(ability, weight){
+penaltyAmount <- function(ability, weight) {
   n <- nrow(ability) - 1
   s <- 0
   for(i in 1:(n - 1)){
@@ -6,5 +6,5 @@ penaltyAmount <- function(ability, weight){
       s <- s + abs(ability[i, 1] - ability[j, 1])*weight[i, j]
     }
   }
-  return(s)
+  s
 }

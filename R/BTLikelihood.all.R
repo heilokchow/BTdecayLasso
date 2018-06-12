@@ -11,7 +11,7 @@ BTLikelihood.all <- function(dataframe, ability, theta, penalty.Qua, weight, Lag
     C <- exp(-u * df[i, 5])
     x <- ability[a1, 1]
     y <- ability[a2, 1]
-    p <- ability["at.home", 1] + x - y
+    p <- ability[n + 1, 1] + x - y
     q <- exp(p)
     s <- s - (df[i, 3] * (p - log(q + 1)) + df[i, 4] * (-log(q + 1))) * C
   }
@@ -23,5 +23,5 @@ BTLikelihood.all <- function(dataframe, ability, theta, penalty.Qua, weight, Lag
   }
   s <- s + v/2 * sum(theta1^2) + sum(Lagrangian * theta1)
   s <- s + lambda * sum(abs(theta) * weight)
-  return(s)
+  s
 }

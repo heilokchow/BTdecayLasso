@@ -23,5 +23,5 @@ BTLasso.weight <- function(dataframe, ability, decay.rate = 0, fixed = 1, thersh
       }
     }
   }
-  return(weight)
+  weight
 }
