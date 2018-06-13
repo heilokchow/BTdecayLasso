@@ -85,7 +85,7 @@ BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 
   s0 <- penaltyAmount(ability0, weight)
   p <- s/s0
   
-  degree <- round(ability[1:n, 1], -log10(thersh))
+  degree <- round(ability[1:n, 1], -log10(thersh)-1)
   degree <- length(unique(degree))
   
   output <- list(ability = ability, df = degree, penalty = p)

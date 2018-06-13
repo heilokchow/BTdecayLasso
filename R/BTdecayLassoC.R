@@ -25,9 +25,11 @@
 #' \item{Optimal.Likelihood}{Lowest AIC or BIC score}
 #' \item{Optimal.degree}{The degree of freedom where lowest AIC or BIC score is achieved}
 #' \item{Optimal.ability}{The ability where lowest AIC or BIC score is achieved}
-#' \item{Likelihood}{All likelihood run}
-#' \item{degree}{All degree run}
-#' \item{ability}{All ability run}
+#' \item{Likelihood}{Sequence contains all likelihood computed in this algorithm}
+#' \item{degree}{Sequence contains all degrees computed in this algorithm}
+#' \item{ability}{Matrix contains all abilities computed in this algorithm}
+#' \item{lambda.min}{The lambda where lowest score is attained}
+#' \item{penalty.min}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
 #' @examples 
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
@@ -107,7 +109,7 @@ BTdecayLassoC <- function(dataframe, ability, weight, Lambda = NULL, criteria = 
   }
   
   output <- list(Optimal.Likelood = s0, Optimal.degree = degree, Optimal.ability = BT$ability,
-                 Likelihood = s, degree = d, ability = ability0)
+                 Likelihood = s, degree = d, ability = ability0, lambda.min = m2, penalty.min = BT$penalty)
   output
 }
 
