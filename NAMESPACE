@@ -3,6 +3,7 @@
 export(BTLasso.weight)
 export(BTdataframe)
 export(BTdecay)
+export(BTdecayLasso)
 export(BTdecayLasso.step2)
 export(BTdecayLassoC)
 export(BTdecayLassoF)
