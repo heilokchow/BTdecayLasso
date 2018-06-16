@@ -58,10 +58,11 @@ BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 
   theta <- matrix(0, nrow = n, ncol = n) 
   Lagrangian <- matrix(0, nrow = n, ncol = n) 
   ability[, 1] <- 0
+  con <- matrix(NA, nrow = 0, ncol = 4)
   
   stop <- 0
+  v <- 1
   j <- 1
-  v <- 10
   while (stop==0) {
     ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda, 
                                   decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
@@ -75,6 +76,8 @@ BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 
       v <- max(Lagrangian^2)
     }
     s <- penaltyAmount(ability, weight)
+    j <- j + 1
+    con <- rbind(con, matrix(c(k, s, v, j), nrow = 1))
   }
   cat(s,'\n')
   
@@ -88,6 +91,6 @@ BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 
   degree <- round(ability[1:n, 1], -log10(thersh)-1)
   degree <- length(unique(degree))
   
-  output <- list(ability = ability, df = degree, penalty = p)
+  output <- list(ability = ability, df = degree, penalty = p, convergence = con)
   output
 }

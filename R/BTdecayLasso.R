@@ -6,7 +6,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, path = 89, decay.rat
   theta <- matrix(0, nrow = n, ncol = n) 
   Lagrangian <- matrix(0, nrow = n, ncol = n) 
   ability[, 1] <- 0
-  Lambda <- seq(-0.5, -6, -0.0625)
+  Lambda <- seq(-0.5, -6, -5.5/(path - 1))
   Lambda <- exp(Lambda)
   v <- 10
   weight <- BTLasso.weight(dataframe, ability, decay.rate = decay.rate, fixed = fixed, thersh = thersh, max = max, iter = iter)
@@ -14,13 +14,13 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, path = 89, decay.rat
   l <- c()
   p <- c()
   
-  BT <- BTdecay(dataframe, ability1, decay.rate = decay.rate, fixed = fixed, iter = iter)
+  BT <- BTdecay(dataframe, ability, decay.rate = decay.rate, fixed = fixed, iter = iter)
   ability1 <- BT$ability
   s1 <- penaltyAmount(ability1, weight)
   l1 <- BTLikelihood(dataframe, ability1, decay.rate = decay.rate)
   df <- c()
   
-  for (i in 1:length(Lambda)) {
+  for (i in 1:path) {
     stop <- 0
     j <- 1
     
@@ -53,9 +53,9 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, path = 89, decay.rat
   
   ability0 <- cbind(ability0, ability1)
   l <- c(l, l1)
-  p <- c(p, p1)
+  p <- c(p, 1)
   df <- c(df, n)
   
-  output <- list(ability = ability, likelihood = l, penalty = p, df = df, Lamda = c(Lambda, 0))
+  output <- list(ability = ability0, likelihood = l, penalty = p, df = df, Lamda = c(Lambda, 0))
   output
 }
