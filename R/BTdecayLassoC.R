@@ -39,7 +39,17 @@
 #' z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC")
 #' @export
 
-BTdecayLassoC <- function(dataframe, ability, weight, Lambda = NULL, criteria = "AIC", decay.rate = 0, fixed = 1, thersh = 1e-5, iter = 100) {
+BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, criteria = "AIC", decay.rate = 0, fixed = 1, thersh = 1e-5, iter = 100) {
+  Lp <- BTdecayLasso(dataframe, ability, lambda = lambda, weight = weight, path = TRUE, decay.rate = decay.rate,
+                     fixed = fixed, thersh = thersh, max = max, iter = iter)
+  
+  if (criteria == "AIC") {
+    x <- 2* Lp$df.path + degree * 2
+  } else if (criteria == "BIC") {
+    s0 <- 2 * s0 + degree * log(n1)
+  } else {
+    stop("Please specify AIC or BIC for criteria")
+  }
   
   flag <- 0
   if (is.null(Lambda)) {

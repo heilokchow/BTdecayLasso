@@ -4,8 +4,9 @@
 \alias{BTdecayLassoC}
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria}
 \usage{
-BTdecayLassoC(dataframe, ability, weight, Lambda = NULL, criteria = "AIC",
-  decay.rate = 0, fixed = 1, thersh = 1e-05, iter = 100)
+BTdecayLassoC(dataframe, ability, weight = NULL, lambda = NULL,
+  criteria = "AIC", decay.rate = 0, fixed = 1, thersh = 1e-05,
+  iter = 100)
 }
 \arguments{
 \item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
@@ -22,8 +23,6 @@ It can be generated using function BTdataframe.}
 
 \item{weight}{Weight for Lasso penalty on different abilities}
 
-\item{Lambda}{A sequence of Lambda}
-
 \item{criteria}{AIC or BIC}
 
 \item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
@@ -35,6 +34,8 @@ generated using function BTdataframe).}
 \item{thersh}{Thershold for convergency}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
+
+\item{Lambda}{A sequence of Lambda}
 
 \item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
 }
