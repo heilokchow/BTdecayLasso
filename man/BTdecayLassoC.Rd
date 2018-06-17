@@ -5,8 +5,8 @@
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria}
 \usage{
 BTdecayLassoC(dataframe, ability, weight = NULL, lambda = NULL,
-  criteria = "AIC", decay.rate = 0, fixed = 1, thersh = 1e-05,
-  iter = 100)
+  criteria = "AIC", type = "HYBRID", decay.rate = 0, fixed = 1,
+  thersh = 1e-05, iter = 100, max = 100)
 }
 \arguments{
 \item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
@@ -23,7 +23,9 @@ It can be generated using function BTdataframe.}
 
 \item{weight}{Weight for Lasso penalty on different abilities}
 
-\item{criteria}{AIC or BIC}
+\item{criteria}{"AIC" or "BIC"}
+
+\item{type}{"HYBRID" or "LASSO"}
 
 \item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
 importance to most recent matches and the estimated parameters reflect more on recent behaviour.}
@@ -35,19 +37,18 @@ generated using function BTdataframe).}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 
-\item{Lambda}{A sequence of Lambda}
-
 \item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
+
+\item{Lambda}{A sequence of Lambda}
 }
 \value{
-\item{Optimal.Likelihood}{Lowest AIC or BIC score}
+\item{Score}{Lowest AIC or BIC score}
 \item{Optimal.degree}{The degree of freedom where lowest AIC or BIC score is achieved}
 \item{Optimal.ability}{The ability where lowest AIC or BIC score is achieved}
-\item{Likelihood}{Sequence contains all likelihood computed in this algorithm}
-\item{degree}{Sequence contains all degrees computed in this algorithm}
 \item{ability}{Matrix contains all abilities computed in this algorithm}
-\item{lambda.min}{The lambda where lowest score is attained}
-\item{penalty.min}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+\item{Optimal.lambda}{The lambda where lowest score is attained}
+\item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+\item{type}{Type of model selection method}
 }
 \description{
 Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria
@@ -61,5 +62,5 @@ x <- BTdataframe(NFL2010)
 
 ##Model selection through AIC
 w <- BTLasso.weight(NFL$df, NFL$ability)
-z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC")
+z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC", type = "LASSO")
 }

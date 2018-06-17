@@ -184,7 +184,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
       p2 <- p[x2]
       df2 <- df[x2]
       output <- list(ability = ability2, likelihood = l2, penalty = p2, df = df2, Lambda = Lambda2,
-                     ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lamda.path = c(Lambda, 0), path = path,
+                     ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(Lambda, 0), path = path,
                      HYBRID.ability = Hability0, HYBRID.likelihood = hl)
     }
   }

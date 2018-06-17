@@ -12,7 +12,8 @@
 #' It can be generated using function BTdataframe.
 #' @param weight Weight for Lasso penalty on different abilities
 #' @param Lambda A sequence of Lambda
-#' @param criteria AIC or BIC
+#' @param criteria "AIC" or "BIC"
+#' @param type "HYBRID" or "LASSO"
 #' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
 #' @param fixed A teams index whose ability will be fixed as 0 (usually the team loss most which can be
@@ -22,104 +23,63 @@
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details Model selection through AIC or BIC method
 #' @return
-#' \item{Optimal.Likelihood}{Lowest AIC or BIC score}
+#' \item{Score}{Lowest AIC or BIC score}
 #' \item{Optimal.degree}{The degree of freedom where lowest AIC or BIC score is achieved}
 #' \item{Optimal.ability}{The ability where lowest AIC or BIC score is achieved}
-#' \item{Likelihood}{Sequence contains all likelihood computed in this algorithm}
-#' \item{degree}{Sequence contains all degrees computed in this algorithm}
 #' \item{ability}{Matrix contains all abilities computed in this algorithm}
-#' \item{lambda.min}{The lambda where lowest score is attained}
-#' \item{penalty.min}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+#' \item{Optimal.lambda}{The lambda where lowest score is attained}
+#' \item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+#' \item{type}{Type of model selection method}
 #' @examples 
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
 #' ##Model selection through AIC
 #' w <- BTLasso.weight(NFL$df, NFL$ability)
-#' z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC")
+#' z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC", type = "LASSO")
 #' @export
 
-BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, criteria = "AIC", decay.rate = 0, fixed = 1, thersh = 1e-5, iter = 100) {
+BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, criteria = "AIC", type = "HYBRID", decay.rate = 0, 
+                          fixed = 1, thersh = 1e-5, iter = 100, max = 100) {
   Lp <- BTdecayLasso(dataframe, ability, lambda = lambda, weight = weight, path = TRUE, decay.rate = decay.rate,
                      fixed = fixed, thersh = thersh, max = max, iter = iter)
   
-  if (criteria == "AIC") {
-    x <- 2* Lp$df.path + degree * 2
-  } else if (criteria == "BIC") {
-    s0 <- 2 * s0 + degree * log(n1)
-  } else {
-    stop("Please specify AIC or BIC for criteria")
-  }
-  
-  flag <- 0
-  if (is.null(Lambda)) {
-    k <- 0.25
-    m <- seq(-6, -0.5, k)
-    Lambda <- exp(m)
-  } else {
-    flag <- 1
-  }
-  
-  n2 <- length(Lambda)
-  ability0 <- ability[, -1]
-  s <- c()
   n1 <- nrow(dataframe)
-  d <- c()
+  if (criteria == "AIC") {
+    mul <- 2
+  } else if (criteria == "BIC") {
+    mul <- log(n1)
+  } else {
+    stop("criteria should either be AIC or BIC")
+  }
+  y <- Lp$df.path * mul
   
-  for (i in 1:n2) {
-    BT <- BTdecayLasso.step2(dataframe, ability, Lambda[i], weight, decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
-    degree <- BT$df
-    s0 <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)
-    
-    if (criteria == "AIC") {
-      s0 <- 2* s0 + degree * 2
-    } else if (criteria == "BIC") {
-      s0 <- 2 * s0 + degree * log(n1)
-    } else {
-      stop("Please specify AIC or BIC for criteria")
+  x <- 2 * Lp$HYBRID.likelihood + y
+  ind <- which.min(x)
+  ind <- ind[length(ind)]
+  dg <- Lp$df.path[ind]
+  
+  if (type == "HYBRID") {
+    output <- list(Score = min(x), Optimal.degree = dg, Optimal.ability = Lp$ability.path[ind], 
+                   Optimal.lambda = Lp$Lambda.path[ind], Optimal.penalty = Lp$penalty.path[ind], type = type)
+  } else if (type == "LASSO") {
+    m0 <- Lp$Lambda.path[ind]
+    m1 <- Lp$Lambda.path[ind + 1]
+    k <- m0 - m1
+    while (k > thersh * 1e2) {
+      k <- k * 0.5
+      m1 <- m0 - k
+      BT <- BTdecayLasso.step2(dataframe, ability, m1, weight, decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+      if (dg == BT$df) {
+        m0 <- m1
+      } 
     }
-    
-    s <- c(s, s0)
-    ability0 <- cbind(ability0, BT$ability)
-    d <- c(d, degree)
+    l <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)
+    output <- list(Score = 2 * l + dg * mul, Optimal.degree = dg, Optimal.ability = BT$ability,
+                   Optimal.lambda = m1, Optimal.penalty = BT$penalty, type = type)
+  } else {
+    stop("Please provide a selection type HYBRID or LASSO")
   }
-  
-  j <- which.min(s)
-  
-  m0 <- m[j - 1]
-  m1 <- m[j]
-  s1 <- s[j]
-  
-  if (flag == 1) {
-    k <- m1 - m0
-  }
-  
-  while (k > thersh * 100) {
-     k <- 0.5 * k
-     m2 <- m1 - k
-     BT <- BTdecayLasso.step2(dataframe, ability, exp(m2), weight, decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
-     s0 <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)
-     if (criteria == "AIC") {
-       s0 <- 2* s0 + degree * 2
-     } else if (criteria == "BIC") {
-       s0 <- 2 * s0 + degree * log(n1)
-     } else {
-       stop("Please specify AIC or BIC for criteria")
-     }
-     degree <- BT$df
-     
-     if (s0 < s1) {
-       m1 <- m2
-       s1 <- s0
-     }
-     ability0 <- cbind(ability0, BT$ability)
-     
-     s <- c(s, s0)
-     d <- c(d, degree)
-  }
-  
-  output <- list(Optimal.Likelood = s0, Optimal.degree = degree, Optimal.ability = BT$ability,
-                 Likelihood = s, degree = d, ability = ability0, lambda.min = m2, penalty.min = BT$penalty)
   output
 }
 
