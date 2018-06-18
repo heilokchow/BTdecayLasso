@@ -66,18 +66,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
   theta <- matrix(0, nrow = n, ncol = n) 
   Lagrangian <- matrix(0, nrow = n, ncol = n) 
   ability[, 1] <- 0
-  
-  if (path == TRUE){
-    Lambda <- exp(seq(-0.5, -6, -0.0625))
-    if (!is.null(lambda)){
-      Lambda <- sort(c(Lambda, lambda), decreasing = TRUE)
-    }
-  } else if (is.null(lambda)) {
-    stop("Please provide a sequence of lambda")
-  } else {
-    Lambda <- sort(lambda, decreasing = TRUE)
-  }
-  n2 <- length(Lambda)
+  k0 <- 0.0675
   
   if (is.null(weight)) {
     weight <- BTLasso.weight(dataframe, ability, decay.rate = decay.rate, fixed = fixed, thersh = thersh, max = max, iter = iter)
@@ -89,71 +78,154 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
   l <- c()
   hl <- c()
   p <- c()
+  slambda <- c()
   
   BT <- BTdecay(dataframe, ability, decay.rate = decay.rate, fixed = fixed, iter = iter)
   ability1 <- BT$ability
   s1 <- penaltyAmount(ability1, weight)
   l1 <- BTLikelihood(dataframe, ability1, decay.rate = decay.rate)
   df <- c()
+  j <- 1
   
-  for (i in 1:n2) {
-    stop <- 0
-    j <- 1
+  if (path == FALSE && is.null(lambda)) {
+    stop("Please provide a sequence of lambda or enable lasso path")
+  }
+  
+  if (path == TRUE) {
+    lambda0 <- 1
+    lambda1 <- exp(-0.5)
+    degree0 <- 0
     
-    while (stop==0) {
-      ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, Lambda[i], 
-                                    decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
-      theta <- BTtheta(ability, weight, Lagrangian, v, Lambda[i])
-      Lagrangian0 <- BTLagrangian(Lagrangian, ability, theta, v)
-      k <- sum(abs(Lagrangian0 - Lagrangian))
-      if (k < thersh) {
-        stop <- 1
-      } else {
-        Lagrangian <- Lagrangian0
-        v <- max(Lagrangian^2)
-      }
-      s0 <- penaltyAmount(ability, weight)
-    }
-    
-    cat(s0, '\n')
-    p0 <- s0/s1
-    ability0 <- cbind(ability0, ability)
-    l0 <- BTLikelihood(dataframe, ability, decay.rate = decay.rate)
-    l <- c(l, l0)
-    p <- c(p, p0)
-    
-    degree1 <- round(ability[1:n, 1], -log10(thersh)-1)
-    degree <- length(unique(degree1))
-    df <- c(df, degree)
-    
-    map <- function(x){
-      if (x == 1){
-        return(1)
-      } else {
-        match <- which(degree1[1:(x - 1)] == degree1[x])
-        if (length(match) == 0) {
-          return(length(unique(degree1[1:x])))
+    while (degree0 < (n - 1)) {
+      stop <- 0
+      while (stop==0) {
+        ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda1, 
+                                      decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        theta <- BTtheta(ability, weight, Lagrangian, v, lambda1)
+        Lagrangian0 <- BTLagrangian(Lagrangian, ability, theta, v)
+        k <- sum(abs(Lagrangian0 - Lagrangian))
+        if (k < thersh) {
+          stop <- 1
         } else {
-          return(length(unique(degree1[1:match[1]])))
+          Lagrangian <- Lagrangian0
+          v <- max(Lagrangian^2)
+        }
+        s0 <- penaltyAmount(ability, weight)
+      }
+      
+      cat(s0, '\n')
+      p0 <- s0/s1
+      ability0 <- cbind(ability0, ability)
+      l0 <- BTLikelihood(dataframe, ability, decay.rate = decay.rate)
+      l <- c(l, l0)
+      p <- c(p, p0)
+      
+      degree1 <- round(ability[1:n, 1], -log10(thersh)-1)
+      degree <- length(unique(degree1))
+      df <- c(df, degree)
+      
+      map <- function(x){
+        if (x == 1){
+          return(1)
+        } else {
+          match <- which(degree1[1:(x - 1)] == degree1[x])
+          if (length(match) == 0) {
+            return(length(unique(degree1[1:x])))
+          } else {
+            return(length(unique(degree1[1:match[1]])))
+          }
         }
       }
+      
+      dataframe1 <- dataframe
+      dataframe1[, 1] <- sapply(dataframe[, 1], map)
+      dataframe1[, 2] <- sapply(dataframe[, 2], map)
+      Hability1 <- matrix(0, nrow = (degree + 1), ncol = 1)
+      HBT <- BTdecay(dataframe1, Hability1, decay.rate = decay.rate, fixed = map(fixed), iter = iter)
+      Hability1 <- HBT$ability
+      Hability <- ability
+      for (i in 1:n) {
+        Hability[i, 1] <- Hability1[map(i), 1]
+      }
+      Hability[(n + 1), 1] <- Hability1[(degree + 1), 1]
+      Hability0 <- cbind(Hability0, Hability)
+      hl0 <- BTLikelihood(dataframe, Hability, decay.rate = decay.rate)
+      hl <- c(hl, hl0)
+      
+      slambda <- c(slambda, lambda1)
+      
+      if (degree > (degree0 + 1)) {
+        lambda1 <- (lambda0 + lambda1)/2
+      } else {
+        lambda0 <- lambda1
+        lambda1 <- lambda1 * exp(-k0)
+        degree0 <- max(degree0, degree)
+      }
     }
-    
-    dataframe1 <- dataframe
-    dataframe1[, 1] <- sapply(dataframe[, 1], map)
-    dataframe1[, 2] <- sapply(dataframe[, 2], map)
-    Hability1 <- matrix(0, nrow = (degree + 1), ncol = 1)
-    HBT <- BTdecay(dataframe1, Hability1, decay.rate = decay.rate, fixed = map(fixed), iter = iter)
-    Hability1 <- HBT$ability
-    Hability <- ability
-    for (i in 1:n) {
-      Hability[i, 1] <- Hability1[map(i), 1]
-    }
-    Hability[(n + 1), 1] <- Hability1[(degree + 1), 1]
-    Hability0 <- cbind(Hability0, Hability)
-    hl0 <- BTLikelihood(dataframe, Hability, decay.rate = decay.rate)
-    hl <- c(hl, hl0)
   }
+  
+  if (!is.null(lambda)){
+    lambda <- sort(lambda, decreasing = TRUE)
+    for (i in 1:length(lambda)) {
+      stop <- 0
+      while (stop==0) {
+        ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda[i], 
+                                      decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        theta <- BTtheta(ability, weight, Lagrangian, v, lambda[i])
+        Lagrangian0 <- BTLagrangian(Lagrangian, ability, theta, v)
+        k <- sum(abs(Lagrangian0 - Lagrangian))
+        if (k < thersh) {
+          stop <- 1
+        } else {
+          Lagrangian <- Lagrangian0
+          v <- max(Lagrangian^2)
+        }
+        s0 <- penaltyAmount(ability, weight)
+      }
+      
+      cat(s0, '\n')
+      p0 <- s0/s1
+      ability0 <- cbind(ability0, ability)
+      l0 <- BTLikelihood(dataframe, ability, decay.rate = decay.rate)
+      l <- c(l, l0)
+      p <- c(p, p0)
+      
+      degree1 <- round(ability[1:n, 1], -log10(thersh)-1)
+      degree <- length(unique(degree1))
+      df <- c(df, degree)
+      
+      map <- function(x){
+        if (x == 1){
+          return(1)
+        } else {
+          match <- which(degree1[1:(x - 1)] == degree1[x])
+          if (length(match) == 0) {
+            return(length(unique(degree1[1:x])))
+          } else {
+            return(length(unique(degree1[1:match[1]])))
+          }
+        }
+      }
+      
+      dataframe1 <- dataframe
+      dataframe1[, 1] <- sapply(dataframe[, 1], map)
+      dataframe1[, 2] <- sapply(dataframe[, 2], map)
+      Hability1 <- matrix(0, nrow = (degree + 1), ncol = 1)
+      HBT <- BTdecay(dataframe1, Hability1, decay.rate = decay.rate, fixed = map(fixed), iter = iter)
+      Hability1 <- HBT$ability
+      Hability <- ability
+      for (i in 1:n) {
+        Hability[i, 1] <- Hability1[map(i), 1]
+      }
+      Hability[(n + 1), 1] <- Hability1[(degree + 1), 1]
+      Hability0 <- cbind(Hability0, Hability)
+      hl0 <- BTLikelihood(dataframe, Hability, decay.rate = decay.rate)
+      hl <- c(hl, hl0)
+      
+      slambda <- c(slambda, lambda[i])
+    }
+  }
+  
   
   ability0 <- cbind(ability0, ability1)
   Hability0 <- cbind(Hability0, ability1)
@@ -163,29 +235,25 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
   df <- c(df, n)
   
   if (is.null(lambda)) {
-    output <- list(ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lamda.path = c(Lambda, 0), path = path,
+    output <- list(ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
                    HYBRID.ability = Hability0, HYBRID.likelihood = hl)
+    class(output) <- "wlasso"
     
   } else { 
     if (path == FALSE) {
-      Lambda2 <- sort(lambda)
-      x2 <- sapply(Lambda2, function(x) which(Lambda == x))
-      ability2 <- ability0[, x2]
-      l2 <- l[x2]
-      p2 <- p[x2]
-      df2 <- df[x2]
-      output <- list(ability = ability2, likelihood = l2, penalty = p2, df = df2, Lambda = Lambda2, path = path,
+      output <- list(ability = ability0, likelihood = l, penalty = p, df = df, Lambda = c(slambda, 0), path = path,
                      HYBRID.ability = Hability0, HYBRID.likelihood = hl)
+      class(output) <- "slasso"
     } else {
-      Lambda2 <- sort(lambda)
-      x2 <- sapply(Lambda2, function(x) which(Lambda == x))
+      x2 <- sapply(lambda, function(x) which(slambda == x))
       ability2 <- ability0[, x2]
       l2 <- l[x2]
       p2 <- p[x2]
       df2 <- df[x2]
-      output <- list(ability = ability2, likelihood = l2, penalty = p2, df = df2, Lambda = Lambda2,
-                     ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(Lambda, 0), path = path,
+      output <- list(ability = ability2, likelihood = l2, penalty = p2, df = df2, Lambda = lambda,
+                     ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
                      HYBRID.ability = Hability0, HYBRID.likelihood = hl)
+      class(output) <- "wlasso"
     }
   }
   output

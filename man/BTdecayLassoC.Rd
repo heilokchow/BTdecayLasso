@@ -5,8 +5,8 @@
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria}
 \usage{
 BTdecayLassoC(dataframe, ability, weight = NULL, lambda = NULL,
-  criteria = "AIC", type = "HYBRID", decay.rate = 0, fixed = 1,
-  thersh = 1e-05, iter = 100, max = 100)
+  criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0,
+  fixed = 1, thersh = 1e-05, iter = 100, max = 100)
 }
 \arguments{
 \item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
