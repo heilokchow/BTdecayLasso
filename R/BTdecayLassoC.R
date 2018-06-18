@@ -67,31 +67,45 @@ BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, crit
   y <- Lp$df.path * mul
   
   x <- 2 * Lp$HYBRID.likelihood + y
-  ind <- which.min(x)
-  ind <- ind[length(ind)]
+  ind <- which(x == min(x))
+  ind <- max(ind)
   dg <- Lp$df.path[ind]
-  
+
   if (type == "HYBRID") {
+    
     output <- list(Score = min(x), Optimal.degree = dg, Optimal.ability = Lp$HYBRID.ability[, ind], 
                    Optimal.lambda = Lp$Lambda.path[ind], Optimal.penalty = Lp$penalty.path[ind], type = type)
+    
   } else if (type == "LASSO") {
+    
     m0 <- Lp$Lambda.path[ind]
     m1 <- Lp$Lambda.path[ind + 1]
     k <- m0 - m1
+    j <- 1
+    
     while (k > thersh * 10) {
       k <- k * 0.5
       m1 <- m0 - k
       BT <- BTdecayLasso.step2(dataframe, ability, m1, weight, decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
       if (dg == BT$df) {
         m0 <- m1
-      } 
+      }
+      j <- j + 1
     }
-    l <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)
-    output <- list(Score = 2 * l + dg * mul, Optimal.degree = dg, Optimal.ability = BT$ability,
-                   Optimal.lambda = m1, Optimal.penalty = BT$penalty, type = type)
+    
+    if (j == 1) {
+      output <- list(Score = 2 * Lp$likelihood.path[ind] + dg * mul, Optimal.degree = dg, Optimal.ability = Lp$ability.path[, ind],
+                     Optimal.lambda = m0, Optimal.penalty = Lp$penalty.path[ind], type = type)
+    } else {
+      l <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)
+      output <- list(Score = 2 * l + dg * mul, Optimal.degree = dg, Optimal.ability = BT$ability,
+                     Optimal.lambda = m1, Optimal.penalty = BT$penalty, type = type)
+    }
+    
   } else {
     stop("Please provide a selection type HYBRID or LASSO")
   }
+  
   output
 }
 

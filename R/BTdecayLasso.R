@@ -49,7 +49,7 @@
 #' x <- BTdataframe(NFL2010)
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and lambda 0.1 on whole lasso path using adaptive lasso
-#' y1 <- BTdecayLasso.step2(x$df, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
+#' y1 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
 #' 
 #' ##Defining equal weight
 #' n <- nrow(x$ability) - 1
@@ -57,7 +57,7 @@
 #' w2[lower.tri(w2, diag = TRUE)] <- 0
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
-#' y2 <- BTdecayLasso.step2(x$df, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+#' y2 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
 #' @export
 
 BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path = TRUE, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
@@ -154,7 +154,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
       
       slambda <- c(slambda, lambda1)
       
-      if (degree > (degree0 + 1)) {
+      if (degree > (degree0 + 1) && abs(lambda0 - lambda1) > thersh) {
         lambda1 <- (lambda0 + lambda1)/2
       } else {
         lambda0 <- lambda1
@@ -240,17 +240,14 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
     class(output) <- "wlasso"
     
   } else { 
+    n3 <- length(lambda)
+    n4 <- length(slambda)
     if (path == FALSE) {
-      output <- list(ability = ability0, likelihood = l, penalty = p, df = df, Lambda = c(slambda, 0), path = path,
-                     HYBRID.ability = Hability0, HYBRID.likelihood = hl)
+      output <- list(ability = ability0[, 1:n4], likelihood = l[1:n4], penalty = p[1:n4], df = df, Lambda = slambda, path = path,
+                     HYBRID.ability = Hability0[, 1:n4], HYBRID.likelihood = hl[1:n4])
       class(output) <- "slasso"
     } else {
-      x2 <- sapply(lambda, function(x) which(slambda == x))
-      ability2 <- ability0[, x2]
-      l2 <- l[x2]
-      p2 <- p[x2]
-      df2 <- df[x2]
-      output <- list(ability = ability2, likelihood = l2, penalty = p2, df = df2, Lambda = lambda,
+      output <- list(ability = ability0[, (n4 - n3 + 1):n4], likelihood = l[(n4 - n3 + 1):n4], penalty = p[(n4 - n3 + 1):n4], df = df[(n4 - n3 + 1):n4], Lambda = lambda,
                      ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
                      HYBRID.ability = Hability0, HYBRID.likelihood = hl)
       class(output) <- "wlasso"
