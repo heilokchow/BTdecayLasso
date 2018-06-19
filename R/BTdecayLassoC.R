@@ -11,7 +11,6 @@
 #' The row number is consistent with the team's index shown in dataframe.
 #' It can be generated using function BTdataframe.
 #' @param weight Weight for Lasso penalty on different abilities
-#' @param Lambda A sequence of Lambda
 #' @param criteria "AIC" or "BIC"
 #' @param type "HYBRID" or "LASSO"
 #' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
@@ -36,10 +35,10 @@
 #' 
 #' ##Model selection through AIC
 #' w <- BTLasso.weight(NFL$df, NFL$ability)
-#' z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC", type = "LASSO")
+#' z <- BTdecayLassoC(NFL$df, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
 #' @export
 
-BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0, 
+BTdecayLassoC <- function(dataframe, ability, weight = NULL, criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0, 
                           fixed = 1, thersh = 1e-5, iter = 100, max = 100) {
   
   
@@ -48,7 +47,7 @@ BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, crit
   }
   
   if (is.null(model)) {
-    Lp <- BTdecayLasso(dataframe, ability, lambda = lambda, weight = weight, path = TRUE, decay.rate = decay.rate,
+    Lp <- BTdecayLasso(dataframe, ability, lambda = NULL, weight = weight, path = TRUE, decay.rate = decay.rate,
                        fixed = fixed, thersh = thersh, max = max, iter = iter)
   } else if (class(model) == "wlasso"){
     Lp <- model
@@ -105,7 +104,7 @@ BTdecayLassoC <- function(dataframe, ability, weight = NULL, lambda = NULL, crit
   } else {
     stop("Please provide a selection type HYBRID or LASSO")
   }
-  
+  class(output) <- "BTC"
   output
 }
 

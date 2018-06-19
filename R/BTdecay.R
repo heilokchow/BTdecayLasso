@@ -112,4 +112,6 @@ BTdecay <- function(dataframe, ability, decay.rate = 0, fixed = 1, iter = 100){
   ability[, 1] <- xa$par - xa$par[fixed]
   ability[n + 1, 1] <- xa$par[n + 1]
   output <- list(ability = ability, convergence = xa$convergence)
+  class(output) <- "BT"
+  output
 }

@@ -40,6 +40,30 @@ generated using function BTdataframe).}
 
 \item{path}{whether the whole Lasso path will be run (plot.BTdecayLasso is enabled only if path = TRUE)}
 }
+\value{
+A list contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
+\item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
+bootstrapping standard deviation}
+\item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
+bootstrapping standard deviation}
+}
 \description{
 Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrapping
+}
+\details{
+100 times of simulation will be done by default, user can adjust the numbers of simulation by input of boot. However, bootstrapping process
+is time consuming and in order to produce stable result, 1000 times of simulations is enough.
+}
+\examples{
+##Initialize the dataframe and ability
+NFL <- BTdataframe(NFL2010)
+
+##Run Lasso estimate for whole Lasso path
+z <- BTdecayLasso(NFL$dataframe, NFL$ability, fixed = NFL$worstTeam)
+
+##Model selection using AIC with Lasso's likelihood
+z1 <- BTdecayLassoC(NFL$dataframe, NFL$ability, model = z, criteria = "AIC", type = "LASSO", fixed = NFL$worstTeam)
+
+##Bootstrapping for model with lowest AIC score for 100 times.
+z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, boot = 100, fixed = NFL$worstTeam)
 }

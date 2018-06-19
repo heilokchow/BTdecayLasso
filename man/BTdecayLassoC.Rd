@@ -4,9 +4,9 @@
 \alias{BTdecayLassoC}
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria}
 \usage{
-BTdecayLassoC(dataframe, ability, weight = NULL, lambda = NULL,
-  criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0,
-  fixed = 1, thersh = 1e-05, iter = 100, max = 100)
+BTdecayLassoC(dataframe, ability, weight = NULL, criteria = "AIC",
+  type = "HYBRID", model = NULL, decay.rate = 0, fixed = 1,
+  thersh = 1e-05, iter = 100, max = 100)
 }
 \arguments{
 \item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
@@ -38,8 +38,6 @@ generated using function BTdataframe).}
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 
 \item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
-
-\item{Lambda}{A sequence of Lambda}
 }
 \value{
 \item{Score}{Lowest AIC or BIC score}
@@ -62,5 +60,5 @@ x <- BTdataframe(NFL2010)
 
 ##Model selection through AIC
 w <- BTLasso.weight(NFL$df, NFL$ability)
-z <- BTdecayLassoC(NFL$df, NFL$ability, w, criteria = "AIC", type = "LASSO")
+z <- BTdecayLassoC(NFL$df, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
 }
