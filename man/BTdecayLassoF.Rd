@@ -58,5 +58,5 @@ x <- BTdataframe(NFL2010)
 
 ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
 y <- BTdecayLassoF(x$df, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
-y$ability
+summary(y)
 }

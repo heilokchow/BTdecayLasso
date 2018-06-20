@@ -13,7 +13,6 @@
 #' @param lambda The amount of Lasso penalty induced, only a single scalar is accepted in bootstrapping.
 #' @param boot Amount of simulations.
 #' @param weight Weight for Lasso penalty on different abilities.
-#' @param path whether the whole Lasso path will be run (plot.BTdecayLasso is enabled only if path = TRUE)
 #' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
 #' @param fixed A teams index whose ability will be fixed as 0 (usually the team loss most which can be
@@ -106,8 +105,11 @@ boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = N
   Hori <- BTL$HYBRID.ability
   
   Bout <- cbind(Bori, Bmean, Bsd)
+  colnames(Bout) <- c("Original", "Est.Mean", "Est.std")
   Hout <- cbind(Hori, Hmean, Hsd)
-  output <- list(Lasso = Bout, HYBRID.Lasso = Hout)
+  colnames(Hout) <- c("Original", "Est.Mean", "Est.std")
+  output <- list(penalty = BTL$penalty, Lasso = Bout, HYBRID.Lasso = Hout, decay.rate = decay.rate)
+  class(output) <- "boot"
   output
 }
 

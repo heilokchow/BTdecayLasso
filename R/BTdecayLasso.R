@@ -50,6 +50,7 @@
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and lambda 0.1 on whole lasso path using adaptive lasso
 #' y1 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
+#' summary(y1)
 #' 
 #' ##Defining equal weight
 #' n <- nrow(x$ability) - 1
@@ -58,6 +59,7 @@
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
 #' y2 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+#' summary(y2)
 #' @export
 
 BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path = TRUE, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
@@ -236,7 +238,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
   
   if (is.null(lambda)) {
     output <- list(ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
-                   HYBRID.ability = Hability0, HYBRID.likelihood = hl)
+                   HYBRID.ability = Hability0, HYBRID.likelihood = hl, decay.rate = decay.rate)
     class(output) <- "wlasso"
     
   } else { 
@@ -244,13 +246,15 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
     n4 <- length(slambda)
     if (path == FALSE) {
       output <- list(ability = ability0[, 1:n4], likelihood = l[1:n4], penalty = p[1:n4], df = df, Lambda = slambda, path = path,
-                     HYBRID.ability = Hability0[, 1:n4], HYBRID.likelihood = hl[1:n4])
+                     HYBRID.ability = Hability0[, 1:n4], HYBRID.likelihood = hl[1:n4], decay.rate = decay.rate)
       class(output) <- "slasso"
     } else {
       output <- list(ability = ability0[, (n4 - n3 + 1):n4], likelihood = l[(n4 - n3 + 1):n4], penalty = p[(n4 - n3 + 1):n4], df = df[(n4 - n3 + 1):n4], Lambda = lambda,
                      ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
-                     HYBRID.ability = Hability0, HYBRID.likelihood = hl)
-      class(output) <- "wlasso"
+                     HYBRID.ability = Hability0[, (n4 - n3 + 1):n4], HYBRID.likelihood = hl[(n4 - n3 + 1):n4], 
+                     HYBRID.ability.path = Hability0, HYBRID.likelihood.path = hl,
+                     decay.rate = decay.rate)
+      class(output) <- "swlasso"
     }
   }
   output

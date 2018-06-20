@@ -37,8 +37,6 @@ generated using function BTdataframe).}
 \item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
-
-\item{path}{whether the whole Lasso path will be run (plot.BTdecayLasso is enabled only if path = TRUE)}
 }
 \value{
 A list contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.

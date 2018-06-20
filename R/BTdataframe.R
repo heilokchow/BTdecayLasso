@@ -33,6 +33,6 @@ BTdataframe <- function(dataframe){
   colnames(ability) <- c("score")
   rownames(ability) <- c(team, "at.home")
   
-  output <- list(df = df, ability = ability, worstTeam = i0)
+  output <- list(dataframe = df, ability = ability, worstTeam = i0)
   output
 }

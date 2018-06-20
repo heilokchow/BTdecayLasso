@@ -36,7 +36,7 @@
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
 #' y <- BTdecayLassoF(x$df, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
-#' y$ability
+#' summary(y)
 #' @export
 
 BTdecayLassoF <- function(dataframe, ability, penalty, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
@@ -90,7 +90,8 @@ BTdecayLassoF <- function(dataframe, ability, penalty, decay.rate = 0, fixed = 1
       }
     }
     
-    s <- list(ability = round(ability, -log10(thersh)), df = BT1$df, penalty = penalty)
+    s <- list(ability = round(ability, -log10(thersh)), df = BT1$df, penalty = penalty, decay.rate = decay.rate, lambda = x1)
+    class(s) <- "BTF"
     s
   }
 }

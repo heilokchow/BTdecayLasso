@@ -33,11 +33,13 @@
 #' 
 #' ##Standard Bradley-Terry Model optimization
 #' y <- BTdecay(x$df, x$ability, decay.rate = 0, fixed = x$worstTeam)
+#' summary(y)
 #' 
 #' ##Dynamic approximation of current ability scores using exponetial decayed likelihood.
 #' ##If we take decay.rate = 0.005
 #' ##Match happens one month before will weight exp(-0.15)=0.86 on log-likelihood function
 #' z <- BTdecay(x$df, x$ability, decay.rate = 0, fixed = x$worstTeam)
+#' summary(z)
 #' @import optimr
 #' @export
 
@@ -111,7 +113,7 @@ BTdecay <- function(dataframe, ability, decay.rate = 0, fixed = 1, iter = 100){
   
   ability[, 1] <- xa$par - xa$par[fixed]
   ability[n + 1, 1] <- xa$par[n + 1]
-  output <- list(ability = ability, convergence = xa$convergence)
+  output <- list(ability = ability, convergence = xa$convergence, decay.rate = decay.rate)
   class(output) <- "BT"
   output
 }

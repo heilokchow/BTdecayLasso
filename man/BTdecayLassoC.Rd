@@ -27,6 +27,8 @@ It can be generated using function BTdataframe.}
 
 \item{type}{"HYBRID" or "LASSO"}
 
+\item{model}{An Lasso path object with class wlasso or swlass. If NULL, the whole lasso path will be run.}
+
 \item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
 importance to most recent matches and the estimated parameters reflect more on recent behaviour.}
 
@@ -61,4 +63,5 @@ x <- BTdataframe(NFL2010)
 ##Model selection through AIC
 w <- BTLasso.weight(NFL$df, NFL$ability)
 z <- BTdecayLassoC(NFL$df, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
+summary(z)
 }

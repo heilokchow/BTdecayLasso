@@ -72,6 +72,7 @@ x <- BTdataframe(NFL2010)
 
 ##BTdecayLasso run with exponential decay rate 0.005 and lambda 0.1 on whole lasso path using adaptive lasso
 y1 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
+summary(y1)
 
 ##Defining equal weight
 n <- nrow(x$ability) - 1
@@ -80,4 +81,5 @@ w2[lower.tri(w2, diag = TRUE)] <- 0
 
 ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
 y2 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+summary(y2)
 }
