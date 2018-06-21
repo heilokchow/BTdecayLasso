@@ -31,13 +31,16 @@
 #' \item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
 #' \item{type}{Type of model selection method}
 #' @examples 
+#' \dontrun{
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
 #' ##Model selection through AIC
-#' w <- BTLasso.weight(NFL$df, NFL$ability)
-#' z <- BTdecayLassoC(NFL$df, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
+#' w <- BTLasso.weight(NFL$dataframe, NFL$ability)
+#' z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
 #' summary(z)
+#' }
+#' 
 #' @export
 
 BTdecayLassoC <- function(dataframe, ability, weight = NULL, criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0, 

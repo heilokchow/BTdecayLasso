@@ -69,9 +69,9 @@ and we can use plot.BTdecayLasso to do a lasso path plot
 \examples{
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
-
+\dontrun{
 ##BTdecayLasso run with exponential decay rate 0.005 and lambda 0.1 on whole lasso path using adaptive lasso
-y1 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
+y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
 summary(y1)
 
 ##Defining equal weight
@@ -80,6 +80,9 @@ w2 <- matrix(1, nrow = n, ncol = n)
 w2[lower.tri(w2, diag = TRUE)] <- 0
 
 ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
-y2 <- BTdecayLasso(x$df, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+y2 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
 summary(y2)
+
+}
+
 }

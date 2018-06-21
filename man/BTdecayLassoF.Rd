@@ -53,10 +53,13 @@ where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \e
 This likelihood function is optimized using L-BFGS-B method with package \bold{optimr}.
 }
 \examples{
+\dontrun{
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
 
 ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
-y <- BTdecayLassoF(x$df, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
+y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
 summary(y)
+}
+
 }

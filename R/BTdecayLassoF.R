@@ -31,12 +31,15 @@
 #' \item{df}{Degree of freedom (number of distinct \eqn{\mu})}
 #' \item{penalty}{Amount of Lasso Penalty}
 #' @examples
+#' \dontrun{
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
 #' ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
-#' y <- BTdecayLassoF(x$df, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
+#' y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
 #' summary(y)
+#' }
+#' 
 #' @export
 
 BTdecayLassoF <- function(dataframe, ability, penalty, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {

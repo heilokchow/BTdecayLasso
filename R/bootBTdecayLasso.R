@@ -28,6 +28,7 @@
 #' \item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 #' bootstrapping standard deviation}
 #' @examples
+#' \dontrun{
 #' ##Initialize the dataframe and ability
 #' NFL <- BTdataframe(NFL2010)
 #' 
@@ -39,6 +40,8 @@
 #' 
 #' ##Bootstrapping for model with lowest AIC score for 100 times.
 #' z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, boot = 100, fixed = NFL$worstTeam)
+#' }
+#' 
 #' @export
 
 boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = NULL, decay.rate = 0, fixed = 1,

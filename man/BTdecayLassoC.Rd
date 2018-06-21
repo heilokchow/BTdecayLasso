@@ -57,11 +57,14 @@ Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted La
 Model selection through AIC or BIC method
 }
 \examples{
+\dontrun{
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
 
 ##Model selection through AIC
-w <- BTLasso.weight(NFL$df, NFL$ability)
-z <- BTdecayLassoC(NFL$df, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
+w <- BTLasso.weight(NFL$dataframe, NFL$ability)
+z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
 summary(z)
+}
+
 }

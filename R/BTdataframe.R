@@ -3,13 +3,13 @@ BTdataframe <- function(dataframe){
   
   
   ## Intitialize dataframe of match results for BTdecayLasso function
-  df1 <- dataframe
+  df1 <- as.data.frame(dataframe)
   df <- matrix(ncol = ncol(df1), nrow = nrow(df1))
-  team <- as.character(unique(df1[, 1]))
+  team <- as.matrix(unique(df1[, 1]))
   n <- length(team)
   
   for(i in 1:n){
-    df[df1 == team[i]] <- i
+    df[df1 == team[i, 1]] <- i
   }
   
   df[, 3] <- df1[, 3]

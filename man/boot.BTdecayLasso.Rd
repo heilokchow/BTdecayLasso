@@ -53,6 +53,7 @@ Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrappi
 is time consuming and in order to produce stable result, 1000 times of simulations is enough.
 }
 \examples{
+\dontrun{
 ##Initialize the dataframe and ability
 NFL <- BTdataframe(NFL2010)
 
@@ -64,4 +65,6 @@ z1 <- BTdecayLassoC(NFL$dataframe, NFL$ability, model = z, criteria = "AIC", typ
 
 ##Bootstrapping for model with lowest AIC score for 100 times.
 z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, boot = 100, fixed = NFL$worstTeam)
+}
+
 }
