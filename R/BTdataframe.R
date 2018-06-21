@@ -1,5 +1,14 @@
+#' Dataframe initialization
+#' 
+#' @details Initial the raw dataframe and return the un-estimated ability vector and the worst
+#' team who losses most
+#' @param dataframe Raw dataframe input, an example data is given as NFL2010 for reference
+#' @return 
+#' \item{dataframe}{dataframe for Bradley-Terry run}
+#' \item{ability}{Initial ability vector for iterations}
+#' \item{worstTeam}{The worst team whose ability can be set as 0 during any model's run}
 #' @export
-BTdataframe <- function(dataframe){
+BTdataframe <- function(dataframe) {
   
   
   ## Intitialize dataframe of match results for BTdecayLasso function

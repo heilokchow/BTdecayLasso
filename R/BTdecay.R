@@ -109,7 +109,7 @@ BTdecay <- function(dataframe, ability, decay.rate = 0, fixed = 1, iter = 100){
     Grad
   }
   
-  xa <- optim(rep(0, n + 1), fn, gr = gr, method = "L-BFGS-B", control = list(maxit = iter))
+  xa <- optimr::optimr(rep(0, n + 1), fn, gr = gr, method = "L-BFGS-B", control = list(maxit = iter))
   
   ability[, 1] <- xa$par - xa$par[fixed]
   ability[n + 1, 1] <- xa$par[n + 1]

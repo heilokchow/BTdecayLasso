@@ -1,4 +1,3 @@
-#' @export
 BTLasso.weight <- function(dataframe, ability, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
   BT <- BTdecay(dataframe, ability, decay.rate = decay.rate, fixed = fixed, iter = iter)
   ability <- BT$ability

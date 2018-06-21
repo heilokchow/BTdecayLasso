@@ -30,13 +30,21 @@
 #' \item{ability}{Estimated ability scores}
 #' \item{df}{Degree of freedom (number of distinct \eqn{\mu})}
 #' \item{penalty}{Amount of Lasso Penalty}
+#' @seealso \code{\link{BTdataframe}} for dataframe initialization
+#' @references 
+#' Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
+#' *The Annals of Applied Statistics* **6** 1949--1970.
+#' 
+#' Zou, H. (2006) The adaptive lasso and its oracle properties. 
+#' *J.Amer.Statist.Assoc* **101** 1418--1429.
 #' @examples
-#' \dontrun{
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
+#'\dontrun{
 #' ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
-#' y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, fixed = x$worstTeam)
+#' y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, 
+#'                    fixed = x$worstTeam)
 #' summary(y)
 #' }
 #' 

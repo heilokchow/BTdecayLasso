@@ -53,18 +53,30 @@ Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrappi
 is time consuming and in order to produce stable result, 1000 times of simulations is enough.
 }
 \examples{
-\dontrun{
 ##Initialize the dataframe and ability
 NFL <- BTdataframe(NFL2010)
 
+\dontrun{
 ##Run Lasso estimate for whole Lasso path
 z <- BTdecayLasso(NFL$dataframe, NFL$ability, fixed = NFL$worstTeam)
 
 ##Model selection using AIC with Lasso's likelihood
-z1 <- BTdecayLassoC(NFL$dataframe, NFL$ability, model = z, criteria = "AIC", type = "LASSO", fixed = NFL$worstTeam)
+z1 <- BTdecayLassoC(NFL$dataframe, NFL$ability, model = z, 
+                    criteria = "AIC", type = "LASSO", fixed = NFL$worstTeam)
 
 ##Bootstrapping for model with lowest AIC score for 100 times.
-z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, boot = 100, fixed = NFL$worstTeam)
+z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, 
+                        boot = 100, fixed = NFL$worstTeam)
 }
 
+}
+\references{
+Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
+*The Annals of Applied Statistics* **6** 1949--1970.
+
+Zou, H. (2006) The adaptive lasso and its oracle properties. 
+*J.Amer.Statist.Assoc* **101** 1418--1429.
+}
+\seealso{
+\code{\link{BTdataframe}} for dataframe initialization
 }

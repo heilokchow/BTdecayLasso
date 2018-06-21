@@ -30,14 +30,22 @@
 #' \item{Optimal.lambda}{The lambda where lowest score is attained}
 #' \item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
 #' \item{type}{Type of model selection method}
+#' @seealso \code{\link{BTdataframe}} for dataframe initialization, 
+#' \code{\link{BTdecayLasso}} for Lasso path computation
+#' @references 
+#' Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
+#' *The Annals of Applied Statistics* **6** 1949--1970.
+#' 
+#' Zou, H. (2006) The adaptive lasso and its oracle properties. 
+#' *J.Amer.Statist.Assoc* **101** 1418--1429.
 #' @examples 
-#' \dontrun{
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
+#' \dontrun{
 #' ##Model selection through AIC
-#' w <- BTLasso.weight(NFL$dataframe, NFL$ability)
-#' z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = w, criteria = "AIC", type = "LASSO")
+#' z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = NULL, 
+#'                    criteria = "AIC", type = "LASSO")
 #' summary(z)
 #' }
 #' 

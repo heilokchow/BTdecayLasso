@@ -60,7 +60,7 @@ If you want to use equal weight, when there are n teams, you can define a n*n up
 The objective likelihood function to be optimized is,
 \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
 With the Lasso constraint,
-\deqn{\sum{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
+\deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
 where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
 \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score and penalty is 1-s/max(s).
 This likelihood function is optimized using L-BFGS-B method with package \bold{optimr}. Without specifying path = FALSE, the whole lasso path will be run
@@ -69,9 +69,12 @@ and we can use plot.BTdecayLasso to do a lasso path plot
 \examples{
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
+
 \dontrun{
-##BTdecayLasso run with exponential decay rate 0.005 and lambda 0.1 on whole lasso path using adaptive lasso
-y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, decay.rate = 0.005, fixed = x$worstTeam)
+##BTdecayLasso run with exponential decay rate 0.005 and 
+##lambda 0.1 on whole lasso path using adaptive lasso
+y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
+                   decay.rate = 0.005, fixed = x$worstTeam)
 summary(y1)
 
 ##Defining equal weight
@@ -80,9 +83,20 @@ w2 <- matrix(1, nrow = n, ncol = n)
 w2[lower.tri(w2, diag = TRUE)] <- 0
 
 ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
-y2 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+y2 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, 
+                   path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
 summary(y2)
-
 }
 
+}
+\references{
+Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
+*The Annals of Applied Statistics* **6** 1949--1970.
+
+Zou, H. (2006) The adaptive lasso and its oracle properties. 
+*J.Amer.Statist.Assoc* **101** 1418--1429.
+}
+\seealso{
+\code{\link{BTdataframe}} for dataframe initialization,
+\code{\link{plot}} for Lasso path plot if path = TRUE in this function's run
 }
