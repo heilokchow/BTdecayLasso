@@ -4,34 +4,35 @@
 #' Bradley-Terry model is applied for paired comparison data. Teams' ability score is estimated by maximizing log-likelihood function.
 #' 
 #' To achieve a better track of current abilities, we apply an exponential decay rate to weight the log-likelohood function.
-#' The most current matches will weight more than previous matches. Parameter decay.rate in most functions of this package is used
+#' The most current matches will weight more than previous matches. Parameter "decay.rate" in most functions of this package is used
 #' to set the amount of exponential decay rate. decay.rate should be non-negative and the approperate range of it depends on time scale in original dataframe.
 #' (see \code{\link{BTdataframe}} and parameter "dataframe"'s definaition of fifth column) For example,
-#' one week's time scale with a decay.rate 0.007 is the same as the one day's time scale with decay.rate 0.001. Usually, for sports matches,
-#' if we take one day's time scale, it's ranging from 0 to 0.01. The higher choice of decay.rate, the better track of current teams' ability
+#' a unit of week with a "decay.rate" 0.007 is equivalent to the unit of day with "decay.rate" 0.001. Usually, for sports matches,
+#' if we take the unit of day, it's ranging from 0 to 0.01. The higher choice of "decay.rate", the better track of current teams' ability
 #' with a side effect of higher variance.
 #' 
-#' If decay.rate is too large, for example 0.1 for day by day time scale, \eqn{\exp(-0.7)} = 0.50. Only half weight will be add to the likelihood with matches played
-#' one week ago and \eqn{\exp(-3.1)} = 0.05 suggests that previous matches take place one month ago will have little effect. Therefore, there will
-#' be only a few matches account for ability's estimation. It will lead to a very high variance and uncertainty. Since standard Bradley-Terry model
-#' can not due with the all win and all lose cases, such estimation may not provide convergent results. Thus, if our estimation prodives divergent
-#' result, an error will be returned and we suggest user to chose a smaller decay.rate or adding more match results in the same modeling period.
+#' If "decay.rate" is too large, for example 0.1 using a unit of day, \eqn{\exp(-0.7)} = 0.50. Only half weight will be add to the likelihood when matches played
+#' one week ago and \eqn{\exp(-3.1)} = 0.05 suggests that previous matches took place one month ago will have little effect. Therefore, Only a few matches are
+#' accounted for ability's estimation. It will lead to a very high variance and uncertainty. Since standard Bradley-Terry model
+#' can not handle the case where there is a team who wins or loses all matches, such estimation may not provide convergent results. 
+#' Thus, if our estimation prodives divergent result, an error will be returned and we suggest user to chose a smaller "decay.rate"
+#' or adding more match results into the same modeling period.
 #' 
-#' The Adaptive Lasso by default is inplemeneted for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
+#' By default, the Adaptive Lasso is inplemeneted for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
 #' Apart from adaptive lasso, user can define own weight for different
 #' Lasso constriant \eqn{\left|\mu_{i}-\mu_{j}\right|} where \eqn{\mu_{i}} is team i's ability.
 #' 
-#' By default, the whole Lasso path will be run. Similar to "glmnet", user can provide their own choice of Lasso penalty "lambda" and determine whether the
+#' Also by default, the whole Lasso path will be run. Similar to package "glmnet", user can provide their own choice of Lasso penalty "lambda" and determine whether the
 #' whole Lasso path will be run (since such run is time-consuming). However, we suggest that if user is not familiar with the actual relationship among
-#' lambda and the amount of peanty and the amount of shrinkage and grouping effect. We suggest user to to do a whole Lasso path run and select the
-#' approperiate lambda through AIC or BIC criteria using \code{\link{BTdecayLassoC}} (since this model is time related, cross-validation method cannot be applied). Also, users can
+#' lambda, the amount of peanty, the amount of shrinkage and grouping effect, a whole Lasso path should be run and selection of an
+#' approperiate lambda is done by AIC or BIC criteria using \code{\link{BTdecayLassoC}} (since this model is time related, cross-validation method cannot be applied). Also, users can
 #' use \code{\link{BTdecayLassoF}} to run with a specific Lasso penalty ranging from 0 to 1 (1 penalty means all estimators will shrink to 0).
 #' 
 #' Two sets of estimated abilities will be given, the biased Lasso estimation and the HYBRID Lasso's estimation.
-#' HYBRID Lasso estimation solves the restricted optimization based on the group determined by Lasso's estimation (Different team's ability will converges to
-#' the same value if Lasso penalty is added and these two teams ability is setting to be equal in the original likelihood function's optimization).
+#' HYBRID Lasso estimation solves the restricted Maximum Likelihood optimization based on the group determined by Lasso's estimation (Different team's ability will converges to
+#' the same value if Lasso penalty is added and these teams' ability is setting to be equal as a restriction).
 #' 
-#' summary() function can be applied to view the outputs.
+#' In addition, summary() using S3 method can be applied to view the outputs.
 #' 
 #' @param dataframe Generated using \code{\link{BTdataframe}} given raw data.
 #' @param ability A column vector of teams ability, the last row is the home parameter.
@@ -47,14 +48,18 @@
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
+#' According to \code{\link{BTdecay}}
 #' The objective likelihood function to be optimized is,
 #' \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
-#' With the Lasso constraint,
+#' The Lasso constraint is given as,
 #' \deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
-#' where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
-#' \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score and penalty is 1-s/max(s).
-#' This likelihood function is optimized using L-BFGS-B method with package \bold{optimr}. Without specifying path = FALSE, the whole lasso path will be run
-#' and we can use plot.BTdecayLasso to do a lasso path plot
+#' where \eqn{w_{ij}} are predifined weight. For Adaptive Lasso, \eqn{\left|w_{ij}=1/(\mu_{i}^{MLE}-\mu_{j}^{MLE})\right|}.
+#' 
+#' Maximiize this constraint objective function is equivalent to minimizing the following equation,
+#' \deqn{-l(\mu,\tau)+\lambda\sum_{i<j}w_{ij}|\theta_{ij}|+\sum_{i<j}u_{ij}(\theta_{ij}-\mu_{i}+\mu_{j})}
+#' Where \eqn{-l(\mu,\tau)} is taking negative value of objective function above.  Increasing "lambda" will decrease "s", there relationship is
+#' monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "penalty" has a postive relationship.
+#' 
 #' @return
 #' \item{ability}{Estimated ability scores with user given lambda}
 #' \item{likelihood}{Negative likelihood of objective function with user given lambda}
@@ -288,7 +293,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
     n3 <- length(lambda)
     n4 <- length(slambda)
     if (path == FALSE) {
-      output <- list(ability = as.matrix(ability0[, 1:n4]), likelihood = l[1:n4], penalty = p[1:n4], df = df, Lambda = slambda, path = path,
+      output <- list(ability = as.matrix(ability0[, 1:n4]), likelihood = l[1:n4], penalty = p[1:n4], df = df[1:n4], Lambda = slambda, path = path,
                      HYBRID.ability = as.matrix(Hability0[, 1:n4]), HYBRID.likelihood = hl[1:n4], decay.rate = decay.rate)
       class(output) <- "slasso"
     } else {

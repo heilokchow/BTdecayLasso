@@ -1,7 +1,7 @@
 #' Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrapping
 #' 
-#' Bootstrapping is done assuming that the true ability is the Maximum Likelihood's estimation.
-#' Same level of Lasso penalty lambda should be applied in different simulation models for Lasso's estimation.
+#' Bootstrapping is done assuming that Maximum Likelihood's estimation reflects the true abilities.
+#' Same level of Lasso penalty "lambda" should be applied in different simulation models for Lasso induced estimation.
 #' 
 #' @param dataframe Generated using \code{\link{BTdataframe}} given raw data.
 #' @param ability A column vector of teams ability, the last row is the home parameter.
@@ -14,12 +14,14 @@
 #' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
 #' can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param thersh Thershold for convergency
-#' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
+#' @param max Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso).
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details 100 times of simulation will be done by default, user can adjust the numbers of simulation by input of boot. However, bootstrapping process
-#' is time consuming and in order to produce stable result, 1000 times of simulations is enough.
+#' is time consuming and usually 1000 time of simulations is enough to provide a stable result.
 #' 
-#' summary() function can be applied to view the outputs.
+#' More detailed description of "lambda", "penalty" and "weight" are documented in \code{\link{BTdecayLasso}}.
+#' 
+#' summary() function follows S3 method can be applied to view the outputs.
 #' @return A list with class "boot" contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
 #' \item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 #' bootstrapping standard deviation}
@@ -50,6 +52,7 @@
 #' }
 #' 
 #' @export
+#' @import stats
 
 boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = NULL, decay.rate = 0, fixed = 1,
                               thersh = 1e-5, max = 100, iter = 100) {

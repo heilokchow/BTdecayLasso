@@ -13,12 +13,14 @@
 #' can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
-#' The objective likelihood function to be optimized is,
+#' The standard Bradley-Terry Model defines the winning probability of i against j,
+#' \deqn{P(Y_{ij}=1)=\frac{\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})}{1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})}}
+#' \eqn{\tau} is the home parameter and \eqn{\mu_{i}} is the team i's ability score. \eqn{h_{ij}} takes 1 if team i is at home, -1 otherwise.
+#' Given, a complete tournament's result. The objective likelihood function with an exponential decay rate is,
 #' \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
-#' where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
-#' \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score.
-#' 
-#' This likelihood function is optimized using L-BFGS-B method with package \bold{optimr} and summary() function can be applied to view the outputs.
+#' where n is the number of matches, \eqn{\alpha} is the exponential decay rate and \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{t_{k}} is
+#' the time lag (time unti now). 
+#' This likelihood function is optimized using L-BFGS-B method with package \bold{optimr} and summary() function with S3 method can be applied to view the outputs.
 #' @return List with class "BT" contains estimated abilities and convergent code, 0 stands for convergency reaches,
 #' 1 stands for convergency not reaches. If 1 is returned, we suggest that decay rate should be set lower.
 #' Bradley-Terry model fails to model the situation when a team wins or loses in all matches.

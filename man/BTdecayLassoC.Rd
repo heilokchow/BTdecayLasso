@@ -20,7 +20,7 @@ The row number is consistent with the team's index shown in dataframe. It can be
 
 \item{type}{"HYBRID" or "LASSO"}
 
-\item{model}{An Lasso path object with class wlasso or swlass. If NULL, the whole lasso path will be run.}
+\item{model}{An Lasso path object with class wlasso or swlasso. If NULL, the whole lasso path will be run.}
 
 \item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 importance to most recent matches and the estimated parameters reflect more on recent behaviour.}
@@ -40,17 +40,17 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 \item{Optimal.ability}{The ability where lowest AIC or BIC score is achieved}
 \item{ability}{Matrix contains all abilities computed in this algorithm}
 \item{Optimal.lambda}{The lambda where lowest score is attained}
-\item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+\item{Optimal.penalty}{The penalty (1- s/\eqn{\max(s)}) where lowest score is attained}
 \item{type}{Type of model selection method}
 }
 \description{
 Model selection via AIC or BIC criteria. For Lasso estimators, the degree of freedom is the number of distinct groups of estimated abilities.
 }
 \details{
-This function is ususally run after the run of whole Lasso path. "model" parameter takes the value of whole
-Lasso pass's run by \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
+This function is ususally run after the run of whole Lasso path. "model" parameter is obtained by whole
+Lasso pass's run using \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
 
-Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood.
+Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood. ("HYBRID" is recommended)
 
 summary() function can be applied to view the outputs.
 }

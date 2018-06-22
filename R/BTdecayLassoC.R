@@ -9,7 +9,7 @@
 #' @param weight Weight for Lasso penalty on different abilities
 #' @param criteria "AIC" or "BIC"
 #' @param type "HYBRID" or "LASSO"
-#' @param model An Lasso path object with class wlasso or swlass. If NULL, the whole lasso path will be run.
+#' @param model An Lasso path object with class wlasso or swlasso. If NULL, the whole lasso path will be run.
 #' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
 #' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
@@ -18,10 +18,10 @@
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
-#' This function is ususally run after the run of whole Lasso path. "model" parameter takes the value of whole
-#' Lasso pass's run by \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
+#' This function is ususally run after the run of whole Lasso path. "model" parameter is obtained by whole
+#' Lasso pass's run using \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
 #' 
-#' Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood.
+#' Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood. ("HYBRID" is recommended)
 #' 
 #' summary() function can be applied to view the outputs.
 #' @return
@@ -30,7 +30,7 @@
 #' \item{Optimal.ability}{The ability where lowest AIC or BIC score is achieved}
 #' \item{ability}{Matrix contains all abilities computed in this algorithm}
 #' \item{Optimal.lambda}{The lambda where lowest score is attained}
-#' \item{Optimal.penalty}{The penalty (s/\eqn{\max(s)}) where lowest score is attained}
+#' \item{Optimal.penalty}{The penalty (1- s/\eqn{\max(s)}) where lowest score is attained}
 #' \item{type}{Type of model selection method}
 #' @seealso \code{\link{BTdataframe}} for dataframe initialization, 
 #' \code{\link{BTdecayLasso}} for Lasso path computation

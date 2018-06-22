@@ -27,7 +27,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{thersh}{Thershold for convergency}
 
-\item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
+\item{max}{Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso).}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
@@ -39,14 +39,16 @@ bootstrapping standard deviation}
 bootstrapping standard deviation}
 }
 \description{
-Bootstrapping is done assuming that the true ability is the Maximum Likelihood's estimation.
-Same level of Lasso penalty lambda should be applied in different simulation models for Lasso's estimation.
+Bootstrapping is done assuming that Maximum Likelihood's estimation reflects the true abilities.
+Same level of Lasso penalty "lambda" should be applied in different simulation models for Lasso induced estimation.
 }
 \details{
 100 times of simulation will be done by default, user can adjust the numbers of simulation by input of boot. However, bootstrapping process
-is time consuming and in order to produce stable result, 1000 times of simulations is enough.
+is time consuming and usually 1000 time of simulations is enough to provide a stable result.
 
-summary() function can be applied to view the outputs.
+More detailed description of "lambda", "penalty" and "weight" are documented in \code{\link{BTdecayLasso}}.
+
+summary() function follows S3 method can be applied to view the outputs.
 }
 \examples{
 ##Initialize the dataframe and ability
