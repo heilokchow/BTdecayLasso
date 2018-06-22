@@ -1,28 +1,26 @@
 #' Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrapping
 #' 
-#' @param dataframe Matrix with 5 columns. First column is the index of the home teams
-#' (use numbers to denote teams).
-#' Second column is the index of the away teams.
-#' Third column is the number of wins of home teams (usually to be 0/1).
-#' Fourth column is the number of wins of away teams (usually to be 0/1).
-#' Fifth column is the scalar of time when the match is played until now (Time lag).
-#' It can be generated using function BTdataframe.
+#' Bootstrapping is done assuming that the true ability is the Maximum Likelihood's estimation.
+#' Same level of Lasso penalty lambda should be applied in different simulation models for Lasso's estimation.
+#' 
+#' @param dataframe Generated using \code{\link{BTdataframe}} given raw data.
 #' @param ability A column vector of teams ability, the last row is the home parameter.
-#' The row number is consistent with the team's index shown in dataframe.
-#' It can be generated using function BTdataframe.
+#' The row number is consistent with the team's index shown in dataframe. It can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param lambda The amount of Lasso penalty induced, only a single scalar is accepted in bootstrapping.
 #' @param boot Amount of simulations.
 #' @param weight Weight for Lasso penalty on different abilities.
-#' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
+#' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
-#' @param fixed A teams index whose ability will be fixed as 0 (usually the team loss most which can be
-#' generated using function BTdataframe).
+#' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
+#' can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param thersh Thershold for convergency
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details 100 times of simulation will be done by default, user can adjust the numbers of simulation by input of boot. However, bootstrapping process
 #' is time consuming and in order to produce stable result, 1000 times of simulations is enough.
-#' @return A list contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
+#' 
+#' summary() function can be applied to view the outputs.
+#' @return A list with class "boot" contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
 #' \item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 #' bootstrapping standard deviation}
 #' \item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
@@ -55,12 +53,18 @@
 
 boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = NULL, decay.rate = 0, fixed = 1,
                               thersh = 1e-5, max = 100, iter = 100) {
+  
+  
   BT <- BTdecay(dataframe, ability, decay.rate = decay.rate, fixed = fixed, iter = iter)
   Tability <- BT$ability
   Bability <- Tability[, -1]
   Hability <- Tability[, -1]
   n1 <- nrow(dataframe)
   n <- nrow(ability) -1
+  
+  if(!(fixed %in% seq(1, n, 1))){
+    stop("The fixed team's index must be an integer index of one of all teams")
+  }
   
   y1 <- sapply(dataframe[, 1], function(x) Tability[x, 1])
   y2 <- sapply(dataframe[, 2], function(x) Tability[x, 1])
@@ -73,7 +77,7 @@ boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = N
     
     stop <- 0
     while (stop == 0) {
-      r <- runif(n1)
+      r <- stats::runif(n1)
       dataframe1[, 3] <- as.numeric(r < y)
       dataframe1[, 4] <- 1 - dataframe1[, 3]
              
@@ -108,9 +112,9 @@ boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = N
   }
   
   Bmean <- matrix(apply(Bability, 1, mean))
-  Bsd <- matrix(apply(Bability, 1, sd))
+  Bsd <- matrix(apply(Bability, 1, stats::sd))
   Hmean <- matrix(apply(Hability, 1, mean))
-  Hsd <- matrix(apply(Hability, 1, sd))
+  Hsd <- matrix(apply(Hability, 1, stats::sd))
   BTL <- BTdecayLasso(dataframe, ability, lambda = lambda, decay.rate = decay.rate, path = FALSE, fixed = fixed, 
                       thersh = thersh, max = max, iter = iter)
   Bori <- BTL$ability

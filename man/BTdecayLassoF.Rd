@@ -8,49 +8,52 @@ BTdecayLassoF(dataframe, ability, penalty, decay.rate = 0, fixed = 1,
   thersh = 1e-05, max = 100, iter = 100)
 }
 \arguments{
-\item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
-(use numbers to denote teams).
-Second column is the index of the away teams.
-Third column is the number of wins of home teams (usually to be 0/1).
-Fourth column is the number of wins of away teams (usually to be 0/1).
-Fifth column is the scalar of time when the match is played until now (Time lag).
-It can be generated using function BTdataframe.}
+\item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
 
-\item{ability}{A column vector of teams ability, the last row is the home parameter.
-The row number is consistent with the team's index shown in dataframe.
-#' It can be generated using function BTdataframe.}
+\item{ability}{A column vector of teams ability, the last row is the home parameter. It can be generated using \code{\link{BTdataframe}} given raw data.
+The row number is consistent with the team's index shown in dataframe. It can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{penalty}{The amount of Lasso penalty induced (1-s/max(s)) where is the sum of Lasso penalty part.}
 
-\item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
+\item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 importance to most recent matches and the estimated parameters reflect more on recent behaviour.}
 
-\item{fixed}{A teams index whose ability will be fixed as 0 (usually the team loss most which can be
-generated using function BTdataframe).}
+\item{fixed}{A teams index whose ability will be fixed as 0. The worstTeam's index
+can be generated using \code{\link{BTdataframe}} given raw data.}
 
-\item{thersh}{Thershold for convergency}
+\item{thersh}{Threshold for convergency}
 
 \item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
 \value{
-The list contains estimated abilities and penalty.
+The list with class "BTF" contains estimated abilities and other parameters.
 \item{ability}{Estimated ability scores}
 \item{df}{Degree of freedom (number of distinct \eqn{\mu})}
 \item{penalty}{Amount of Lasso Penalty}
+\item{decay.rate}{Exponential decay rate}
+\item{lambda}{Corresponding Lasso lambda given penalty rate}
 }
 \description{
-Bradley-Terry Model with Exponential Decayed weighted likelihood and Adaptive Lasso with a given penalty rate
+This function provides a method to computed the estimated abilities and lambda given an intuitive fixed Lasso penalty rate.
+Since in Lasso method, the selection of lambda varies a lot with respect to different datasets. We can keep the consistency of
+amount of Lasso penalty induced in different datasets from different period by setting a fixed Lasso penalty rate "p".
 }
 \details{
+The estimated ability given fixed penalty \eqn{p = 1- s/\max(s)} where s is the sum of Lasso penalty part.
+When p = 0, this model is reduced to a standard Bradley-Terry Model.
+When p = 1, all ability scores are shrinking to 0.
+
+The parameter "penalty", which is p, should be ranging from 0.01 to 0.99 due to the iteration's convergent error.
 The objective likelihood function to be optimized is,
 \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
 With the Lasso constraint,
-\deqn{\sum{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
+\deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
 where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
 \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score and penalty is 1-s/max(s).
-This likelihood function is optimized using L-BFGS-B method with package \bold{optimr}.
+
+summary() function can be applied to view the outputs.
 }
 \examples{
 ##Initializing Dataframe

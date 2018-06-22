@@ -1,26 +1,49 @@
-#' Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with a given Lasso lambda and Lasso weight
+#' Bradley-Terry Model with Exponential Decayed weighted likelihood and Adaptive Lasso
 #' 
 #' @description 
-#' Normal Adaptive Lasso's weight can be determined using funcion BTLasso.weight.
-#' If you want to use equal weight, when there are n teams, you can define a n*n upper triangular matrix with diagonal is 0 and other entries of upper-right part are 1
-#' @param dataframe Matrix with 5 columns. First column is the index of the home teams
-#' (use numbers to denote teams).
-#' Second column is the index of the away teams.
-#' Third column is the number of wins of home teams (usually to be 0/1).
-#' Fourth column is the number of wins of away teams (usually to be 0/1).
-#' Fifth column is the scalar of time when the match is played until now (Time lag).
-#' It can be generated using function BTdataframe.
+#' Bradley-Terry model is applied for paired comparison data. Teams' ability score is estimated by maximizing log-likelihood function.
+#' 
+#' To achieve a better track of current abilities, we apply an exponential decay rate to weight the log-likelohood function.
+#' The most current matches will weight more than previous matches. Parameter decay.rate in most functions of this package is used
+#' to set the amount of exponential decay rate. decay.rate should be non-negative and the approperate range of it depends on time scale in original dataframe.
+#' (see \code{\link{BTdataframe}} and parameter "dataframe"'s definaition of fifth column) For example,
+#' one week's time scale with a decay.rate 0.007 is the same as the one day's time scale with decay.rate 0.001. Usually, for sports matches,
+#' if we take one day's time scale, it's ranging from 0 to 0.01. The higher choice of decay.rate, the better track of current teams' ability
+#' with a side effect of higher variance.
+#' 
+#' If decay.rate is too large, for example 0.1 for day by day time scale, \eqn{\exp(-0.7)} = 0.50. Only half weight will be add to the likelihood with matches played
+#' one week ago and \eqn{\exp(-3.1)} = 0.05 suggests that previous matches take place one month ago will have little effect. Therefore, there will
+#' be only a few matches account for ability's estimation. It will lead to a very high variance and uncertainty. Since standard Bradley-Terry model
+#' can not due with the all win and all lose cases, such estimation may not provide convergent results. Thus, if our estimation prodives divergent
+#' result, an error will be returned and we suggest user to chose a smaller decay.rate or adding more match results in the same modeling period.
+#' 
+#' The Adaptive Lasso by default is inplemeneted for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
+#' Apart from adaptive lasso, user can define own weight for different
+#' Lasso constriant \eqn{\left|\mu_{i}-\mu_{j}\right|} where \eqn{\mu_{i}} is team i's ability.
+#' 
+#' By default, the whole Lasso path will be run. Similar to "glmnet", user can provide their own choice of Lasso penalty "lambda" and determine whether the
+#' whole Lasso path will be run (since such run is time-consuming). However, we suggest that if user is not familiar with the actual relationship among
+#' lambda and the amount of peanty and the amount of shrinkage and grouping effect. We suggest user to to do a whole Lasso path run and select the
+#' approperiate lambda through AIC or BIC criteria using \code{\link{BTdecayLassoC}} (since this model is time related, cross-validation method cannot be applied). Also, users can
+#' use \code{\link{BTdecayLassoF}} to run with a specific Lasso penalty ranging from 0 to 1 (1 penalty means all estimators will shrink to 0).
+#' 
+#' Two sets of estimated abilities will be given, the biased Lasso estimation and the HYBRID Lasso's estimation.
+#' HYBRID Lasso estimation solves the restricted optimization based on the group determined by Lasso's estimation (Different team's ability will converges to
+#' the same value if Lasso penalty is added and these two teams ability is setting to be equal in the original likelihood function's optimization).
+#' 
+#' summary() function can be applied to view the outputs.
+#' 
+#' @param dataframe Generated using \code{\link{BTdataframe}} given raw data.
 #' @param ability A column vector of teams ability, the last row is the home parameter.
-#' The row number is consistent with the team's index shown in dataframe.
-#' It can be generated using function BTdataframe.
-#' @param lambda The amount of Lasso penalty induced.
+#' The row number is consistent with the team's index shown in dataframe. It can be generated using \code{\link{BTdataframe}} given raw data.
+#' @param lambda The amount of Lasso penalty induced. The input should be a positive scalar or a sequence.
 #' @param weight Weight for Lasso penalty on different abilities.
 #' @param path whether the whole Lasso path will be run (plot.BTdecayLasso is enabled only if path = TRUE)
-#' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
+#' @param decay.rate A non-negative exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
-#' @param fixed A teams index whose ability will be fixed as 0 (usually the team loss most which can be
-#' generated using function BTdataframe).
-#' @param thersh Thershold for convergency
+#' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
+#' can be generated using \code{\link{BTdataframe}} given raw data.
+#' @param thersh Threshold for convergency used for Augmented Lagrangian Method.
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
@@ -45,7 +68,7 @@
 #' \item{Lambda.path}{Whole Lasso path}
 #' \item{path}{Whether whole Lasso path will be run}
 #' @seealso \code{\link{BTdataframe}} for dataframe initialization,
-#' \code{\link{plot}} for Lasso path plot if path = TRUE in this function's run
+#' \code{\link{plot.swlasso}},  \code{\link{plot.wlasso}} are used for Lasso path plot if path = TRUE in this function's run
 #' @references 
 #' Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
 #' *The Annals of Applied Statistics* **6** 1949--1970.
@@ -77,12 +100,18 @@
 #' @export
 
 BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path = TRUE, decay.rate = 0, fixed = 1, thersh = 1e-5, max = 100, iter = 100) {
+  
+  
   u <- decay.rate
   n <- nrow(ability) - 1
   theta <- matrix(0, nrow = n, ncol = n) 
   Lagrangian <- matrix(0, nrow = n, ncol = n) 
   ability[, 1] <- 0
   k0 <- 0.0675
+  
+  if(!(fixed %in% seq(1, n, 1))){
+    stop("The fixed team's index must be an integer index of one of all teams")
+  }
   
   if (is.null(weight)) {
     weight <- BTLasso.weight(dataframe, ability, decay.rate = decay.rate, fixed = fixed, thersh = thersh, max = max, iter = iter)

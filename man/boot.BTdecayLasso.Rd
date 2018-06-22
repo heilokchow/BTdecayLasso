@@ -8,17 +8,10 @@ boot.BTdecayLasso(dataframe, ability, lambda, boot = 100, weight = NULL,
   decay.rate = 0, fixed = 1, thersh = 1e-05, max = 100, iter = 100)
 }
 \arguments{
-\item{dataframe}{Matrix with 5 columns. First column is the index of the home teams
-(use numbers to denote teams).
-Second column is the index of the away teams.
-Third column is the number of wins of home teams (usually to be 0/1).
-Fourth column is the number of wins of away teams (usually to be 0/1).
-Fifth column is the scalar of time when the match is played until now (Time lag).
-It can be generated using function BTdataframe.}
+\item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{ability}{A column vector of teams ability, the last row is the home parameter.
-The row number is consistent with the team's index shown in dataframe.
-It can be generated using function BTdataframe.}
+The row number is consistent with the team's index shown in dataframe. It can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{lambda}{The amount of Lasso penalty induced, only a single scalar is accepted in bootstrapping.}
 
@@ -26,11 +19,11 @@ It can be generated using function BTdataframe.}
 
 \item{weight}{Weight for Lasso penalty on different abilities.}
 
-\item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
+\item{decay.rate}{The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 importance to most recent matches and the estimated parameters reflect more on recent behaviour.}
 
-\item{fixed}{A teams index whose ability will be fixed as 0 (usually the team loss most which can be
-generated using function BTdataframe).}
+\item{fixed}{A teams index whose ability will be fixed as 0. The worstTeam's index
+can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{thersh}{Thershold for convergency}
 
@@ -39,18 +32,21 @@ generated using function BTdataframe).}
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
 \value{
-A list contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
+A list with class "boot" contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
 \item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 bootstrapping standard deviation}
 \item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 bootstrapping standard deviation}
 }
 \description{
-Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrapping
+Bootstrapping is done assuming that the true ability is the Maximum Likelihood's estimation.
+Same level of Lasso penalty lambda should be applied in different simulation models for Lasso's estimation.
 }
 \details{
 100 times of simulation will be done by default, user can adjust the numbers of simulation by input of boot. However, bootstrapping process
 is time consuming and in order to produce stable result, 1000 times of simulations is enough.
+
+summary() function can be applied to view the outputs.
 }
 \examples{
 ##Initialize the dataframe and ability

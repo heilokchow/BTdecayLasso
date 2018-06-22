@@ -1,27 +1,29 @@
 #' Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria
 #' 
-#' @param dataframe Matrix with 5 columns. First column is the index of the home teams
-#' (use numbers to denote teams).
-#' Second column is the index of the away teams.
-#' Third column is the number of wins of home teams (usually to be 0/1).
-#' Fourth column is the number of wins of away teams (usually to be 0/1).
-#' Fifth column is the scalar of time when the match is played until now (Time lag).
-#' It can be generated using function BTdataframe.
+#' 
+#' Model selection via AIC or BIC criteria. For Lasso estimators, the degree of freedom is the number of distinct groups of estimated abilities.
+#' 
+#' @param dataframe Generated using \code{\link{BTdataframe}} given raw data.
 #' @param ability A column vector of teams ability, the last row is the home parameter.
-#' The row number is consistent with the team's index shown in dataframe.
-#' It can be generated using function BTdataframe.
+#' The row number is consistent with the team's index shown in dataframe. It can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param weight Weight for Lasso penalty on different abilities
 #' @param criteria "AIC" or "BIC"
 #' @param type "HYBRID" or "LASSO"
 #' @param model An Lasso path object with class wlasso or swlass. If NULL, the whole lasso path will be run.
-#' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.1), A larger decay rate weights more
+#' @param decay.rate The exponential decay rate. Usually ranging from (0, 0.01), A larger decay rate weights more
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
-#' @param fixed A teams index whose ability will be fixed as 0 (usually the team loss most which can be
-#' generated using function BTdataframe).
-#' @param thersh Thershold for convergency
+#' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
+#' can be generated using \code{\link{BTdataframe}} given raw data.
+#' @param thersh Threshold for convergency
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
-#' @details Model selection through AIC or BIC method
+#' @details
+#' This function is ususally run after the run of whole Lasso path. "model" parameter takes the value of whole
+#' Lasso pass's run by \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
+#' 
+#' Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood.
+#' 
+#' summary() function can be applied to view the outputs.
 #' @return
 #' \item{Score}{Lowest AIC or BIC score}
 #' \item{Optimal.degree}{The degree of freedom where lowest AIC or BIC score is achieved}
@@ -54,7 +56,7 @@
 BTdecayLassoC <- function(dataframe, ability, weight = NULL, criteria = "AIC", type = "HYBRID", model = NULL, decay.rate = 0, 
                           fixed = 1, thersh = 1e-5, iter = 100, max = 100) {
   
-  
+ 
   if (is.null(weight)) {
     weight <- BTLasso.weight(dataframe, ability, decay.rate = decay.rate, fixed = fixed, thersh = thersh, max = max, iter = iter)
   }

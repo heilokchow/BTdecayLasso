@@ -14,6 +14,7 @@ plot.swlasso <- function(x, ...) {
   for (i in 1:(length(x$likelihood.path) - 1)) {
     df1 <- rbind(df1, data.frame(ability = x$ability.path[1:n, (i + 1)], team = seq(1, n, 1), penalty = x$penalty.path[i + 1]))
   }
+  penalty <- ability <- team <- NULL
   ggplot2::ggplot(df1, aes(x = penalty, y = ability, color = team)) + geom_line(aes(group = team))
   
 }
@@ -34,6 +35,7 @@ plot.wlasso <- function(x, ...) {
   for (i in 1:(length(x$likelihood.path) - 1)) {
     df1 <- rbind(df1, data.frame(ability = x$ability.path[1:n, (i + 1)], team = seq(1, n, 1), penalty = x$penalty.path[i + 1]))
   }
+  penalty <- ability <- team <- NULL
   ggplot2::ggplot(df1, aes(x = penalty, y = ability, color = team)) + geom_line(aes(group = team))
   
 }

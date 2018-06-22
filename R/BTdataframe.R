@@ -3,6 +3,11 @@
 #' @details Initial the raw dataframe and return the un-estimated ability vector and the worst
 #' team who losses most
 #' @param dataframe Raw dataframe input, an example data is given as NFL2010 for reference
+#' The raw data is a dataframe with 5 columns. First column is home teams
+#' Second column is away teams.
+#' Third column is the number of wins of home teams (if home team defeats away team, record 1 here, 0 otherwise).
+#' Fourth column is the number of wins of away teams (if home team defeats away team, record 0 here, 1 otherwise).
+#' Fifth column is a scalar of time when the match is played until now (Time lag).
 #' @return 
 #' \item{dataframe}{dataframe for Bradley-Terry run}
 #' \item{ability}{Initial ability vector for iterations}
