@@ -11,7 +11,7 @@
 #' if we take the unit of day, it's ranging from 0 to 0.01. The higher choice of "decay.rate", the better track of current teams' ability
 #' with a side effect of higher variance.
 #' 
-#' If "decay.rate" is too large, for example 0.1 using a unit of day, \eqn{\exp(-0.7)} = 0.50. Only half weight will be add to the likelihood when matches played
+#' If "decay.rate" is too large, for example "0.1" with a unit of day, \eqn{\exp(-0.7)} = 0.50. Only half weight will be add to the likelihood for matches played
 #' one week ago and \eqn{\exp(-3.1)} = 0.05 suggests that previous matches took place one month ago will have little effect. Therefore, Only a few matches are
 #' accounted for ability's estimation. It will lead to a very high variance and uncertainty. Since standard Bradley-Terry model
 #' can not handle the case where there is a team who wins or loses all matches, such estimation may not provide convergent results. 
@@ -48,30 +48,30 @@
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
-#' According to \code{\link{BTdecay}}
-#' The objective likelihood function to be optimized is,
+#' According to \code{\link{BTdecay}}, the objective likelihood function to be optimized is,
 #' \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
 #' The Lasso constraint is given as,
 #' \deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
 #' where \eqn{w_{ij}} are predifined weight. For Adaptive Lasso, \eqn{\left|w_{ij}=1/(\mu_{i}^{MLE}-\mu_{j}^{MLE})\right|}.
 #' 
 #' Maximiize this constraint objective function is equivalent to minimizing the following equation,
-#' \deqn{-l(\mu,\tau)+\lambda\sum_{i<j}w_{ij}|\theta_{ij}|+\sum_{i<j}u_{ij}(\theta_{ij}-\mu_{i}+\mu_{j})}
-#' Where \eqn{-l(\mu,\tau)} is taking negative value of objective function above.  Increasing "lambda" will decrease "s", there relationship is
-#' monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "penalty" has a postive relationship.
-#' 
+#' \deqn{-l(\mu,\tau)+\lambda\sum_{i<j}w_{ij}|\mu_{i}-\mu_{j}|}
+#' Where \eqn{-l(\mu,\tau)} is taking negative value of objective function above.  Increase "lambda" will decrease "s", their relationship is
+#' monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "penalty" has a postive correlation.
 #' @return
 #' \item{ability}{Estimated ability scores with user given lambda}
 #' \item{likelihood}{Negative likelihood of objective function with user given lambda}
 #' \item{df}{Degree of freedom with user given lambda(number of distinct \eqn{\mu})}
 #' \item{penalty}{\eqn{s/max(s)} with user given lambda}
 #' \item{Lambda}{User given lambda}
-#' \item{ability.path}{Estimated ability scores on whole Lasso path}
-#' \item{likelihood.path}{Negative likelihood of objective function on whole Lasso path}
-#' \item{df.path}{Degree of freedom on whole Lasso path(number of distinct \eqn{\mu})}
-#' \item{penalty.path}{\eqn{s/max(s)} on whole Lasso path}
-#' \item{Lambda.path}{Whole Lasso path}
+#' \item{ability.path}{if path = TRUE, estimated ability scores on whole Lasso path}
+#' \item{likelihood.path}{if path = TRUE, negative likelihood of objective function on whole Lasso path}
+#' \item{df.path}{if path = TRUE, degree of freedom on whole Lasso path(number of distinct \eqn{\mu})}
+#' \item{penalty.path}{if path = TRUE, \eqn{s/max(s)} on whole Lasso path}
+#' \item{Lambda.path}{if path = TRUE, Whole Lasso path}
 #' \item{path}{Whether whole Lasso path will be run}
+#' \item{HYBRID.ability.path}{If path = TRUE, the whole path of evolving of HYBRID ability}
+#' \item{HYBRID.likelihood.path}{if path = TRUE, the whole path of HYBRID likelihood}
 #' @seealso \code{\link{BTdataframe}} for dataframe initialization,
 #' \code{\link{plot.swlasso}},  \code{\link{plot.wlasso}} are used for Lasso path plot if path = TRUE in this function's run
 #' @references 
@@ -84,6 +84,10 @@
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
+#' ##The following code runs the main results
+#' ##But they will not be run in R CMD check since these iterations are time-consuming
+#' ##Usually a single lambda's run will take 1-20 s
+#' ##The whole Adaptive Lasso run will take 5-20 min
 #' \dontrun{
 #' ##BTdecayLasso run with exponential decay rate 0.005 and 
 #' ##lambda 0.1 on whole lasso path using adaptive lasso
@@ -92,6 +96,11 @@
 #' summary(y1)
 #' 
 #' ##Defining equal weight
+#' ##Note that comparing to Adaptive weight, the user defined weight may not be 
+#' ##efficient in groupiing. Therefore, to run the whole Lasso path 
+#' ##(evolving of distinct ability scores), it may take a much longer time. 
+#' ##We recommend the user to apply the default setting,
+#' ##where Adaptive Lasso will be run.
 #' n <- nrow(x$ability) - 1
 #' w2 <- matrix(1, nrow = n, ncol = n)
 #' w2[lower.tri(w2, diag = TRUE)] <- 0
@@ -99,7 +108,16 @@
 #' ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
 #' y2 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, 
 #'                    path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
+#' 
+#' ##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
+#' ##Time-consuming
+#' y3 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, 
+#'                    path = TRUE, decay.rate = 0.005, fixed = x$worstTeam)
 #' summary(y2)
+#' 
+#' ##Plot the Lasso path (S3 method)
+#' plot(y1)
+#' plot(y3)
 #' }
 #' 
 #' @export
@@ -286,7 +304,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
   
   if (is.null(lambda)) {
     output <- list(ability.path = ability0, likelihood.path = l, penalty.path = p, df.path = df, Lambda.path = c(slambda, 0), path = path,
-                   HYBRID.ability = Hability0, HYBRID.likelihood = hl, decay.rate = decay.rate)
+                   HYBRID.ability.path = Hability0, HYBRID.likelihood.path = hl, decay.rate = decay.rate)
     class(output) <- "wlasso"
     
   } else { 

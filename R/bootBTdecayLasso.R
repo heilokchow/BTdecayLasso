@@ -27,7 +27,7 @@
 #' bootstrapping standard deviation}
 #' \item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
 #' bootstrapping standard deviation}
-#' @seealso \code{\link{BTdataframe}} for dataframe initialization
+#' @seealso \code{\link{BTdataframe}} for dataframe initialization, \code{\link{BTdecayLasso}} for detailed description
 #' @references 
 #' Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
 #' *The Annals of Applied Statistics* **6** 1949--1970.
@@ -36,19 +36,23 @@
 #' *J.Amer.Statist.Assoc* **101** 1418--1429.
 #' @examples
 #' ##Initialize the dataframe and ability
-#' NFL <- BTdataframe(NFL2010)
+#' x <- BTdataframe(NFL2010)
 #' 
+#' ##The following code runs the main results
+#' ##But they will not be run in R CMD check since these iterations are time-consuming
 #' \dontrun{
 #' ##Run Lasso estimate for whole Lasso path
-#' z <- BTdecayLasso(NFL$dataframe, NFL$ability, fixed = NFL$worstTeam)
+#' z <- BTdecayLasso(x$dataframe, x$ability, fixed = x$worstTeam)
 #' 
 #' ##Model selection using AIC with Lasso's likelihood
-#' z1 <- BTdecayLassoC(NFL$dataframe, NFL$ability, model = z, 
-#'                     criteria = "AIC", type = "LASSO", fixed = NFL$worstTeam)
+#' z1 <- BTdecayLassoC(x$dataframe, x$ability, model = z, 
+#'                     criteria = "AIC", type = "LASSO", fixed = x$worstTeam)
 #' 
 #' ##Bootstrapping for model with lowest AIC score for 100 times.
-#' z2 <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, lambda = z1$Optimal.lambda, 
-#'                         boot = 100, fixed = NFL$worstTeam)
+#' ##Note that the decay.rate used in model selection should be consistent with
+#' ##the one which is used in whole Lasso path's run (keep the same model)
+#' z2 <- boot.BTdecayLasso(x$dataframe, x$ability, lambda = z1$Optimal.lambda, 
+#'                         boot = 100, fixed = x$worstTeam)
 #' }
 #' 
 #' @export
@@ -57,6 +61,9 @@
 boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = NULL, decay.rate = 0, fixed = 1,
                               thersh = 1e-5, max = 100, iter = 100) {
   
+  if (!is.integer(boot) || boot < 2) {
+    stop("Boot should be an integer greater than 1")
+  }
   
   BT <- BTdecay(dataframe, ability, decay.rate = decay.rate, fixed = fixed, iter = iter)
   Tability <- BT$ability

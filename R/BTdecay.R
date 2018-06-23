@@ -27,6 +27,7 @@
 #' If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also casues the same problem.
 #' \item{ability}{Estimated ability scores}
 #' \item{convergence}{0 stands for convergent, 1 stands for not convergent}
+#' \item{decay.rate}{Decay rate of this model}
 #' @examples 
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)

@@ -38,20 +38,15 @@ The list with class "BTF" contains estimated abilities and other parameters.
 \description{
 This function provides a method to computed the estimated abilities and lambda given an intuitive fixed Lasso penalty rate.
 Since in Lasso method, the selection of lambda varies a lot with respect to different datasets. We can keep the consistency of
-amount of Lasso penalty induced in different datasets from different period by setting a fixed Lasso penalty rate "p".
+amount of Lasso penalty induced in different datasets from different period by setting a fixed Lasso penalty rate "penalty".
+Please refer to \code{\link{BTdecayLasso}} for the definition of "penalty" and its relationship with "lambda".
 }
 \details{
 The estimated ability given fixed penalty \eqn{p = 1- s/\max(s)} where s is the sum of Lasso penalty part.
 When p = 0, this model is reduced to a standard Bradley-Terry Model.
 When p = 1, all ability scores are shrinking to 0.
 
-The parameter "penalty", which is p, should be ranging from 0.01 to 0.99 due to the iteration's convergent error.
-The objective likelihood function to be optimized is,
-\deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
-With the Lasso constraint,
-\deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
-where n is the number of matches, \eqn{\alpha} is the exponential decay rate, \eqn{\tau} is the home parameter and 
-\eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{\mu_{i}} is the team i's ability score and penalty is 1-s/max(s).
+The parameter "penalty" should be ranging from 0.01 to 0.99 due to the iteration's convergent error.
 
 summary() function can be applied to view the outputs.
 }
@@ -59,6 +54,8 @@ summary() function can be applied to view the outputs.
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
 
+##The following code runs the main results
+##But they will not be run in R CMD check since these iterations are time-consuming
 \dontrun{
 ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
 y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, 
@@ -75,5 +72,5 @@ Zou, H. (2006) The adaptive lasso and its oracle properties.
 *J.Amer.Statist.Assoc* **101** 1418--1429.
 }
 \seealso{
-\code{\link{BTdataframe}} for dataframe initialization
+\code{\link{BTdataframe}} for dataframe initialization, \code{\link{BTdecayLasso}} for detailed description
 }

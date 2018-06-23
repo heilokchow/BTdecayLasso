@@ -42,6 +42,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 \item{Optimal.lambda}{The lambda where lowest score is attained}
 \item{Optimal.penalty}{The penalty (1- s/\eqn{\max(s)}) where lowest score is attained}
 \item{type}{Type of model selection method}
+\item{decay.rate}{Decay rate of this model}
 }
 \description{
 Model selection via AIC or BIC criteria. For Lasso estimators, the degree of freedom is the number of distinct groups of estimated abilities.
@@ -58,11 +59,23 @@ summary() function can be applied to view the outputs.
 ##Initializing Dataframe
 x <- BTdataframe(NFL2010)
 
+##The following code runs the main results
+##But they will not be run in R CMD check since these iterations are time-consuming
 \dontrun{
 ##Model selection through AIC
-z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = NULL, 
+z <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, fixed = x$worstTeam,
                    criteria = "AIC", type = "LASSO")
 summary(z)
+
+##If the whole Lasso path is run, we use it's result for model selection (recommended)
+##Note that the decay.rate used in model selection should be consistent with
+##the one which is used in whole Lasso path's run (keep the same model)
+y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
+                   decay.rate = 0.005, fixed = x$worstTeam)
+                   
+z1 <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, model = z1,
+                    decay.rate = 0.005,
+                    fixed = x$worstTeam, criteria = "BIC", type = "HYBRID")
 }
 
 }
@@ -75,5 +88,5 @@ Zou, H. (2006) The adaptive lasso and its oracle properties.
 }
 \seealso{
 \code{\link{BTdataframe}} for dataframe initialization, 
-\code{\link{BTdecayLasso}} for Lasso path computation
+\code{\link{BTdecayLasso}} for obtaining a whole Lasso path
 }

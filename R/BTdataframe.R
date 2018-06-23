@@ -9,12 +9,22 @@
 #' Fourth column is the number of wins of away teams (if home team defeats away team, record 0 here, 1 otherwise).
 #' Fifth column is a scalar of time when the match is played until now (Time lag). Any time scale can be used here.
 #' "NFL2010" applies the unit of day.
+#' @param home Whether home effect will be considered, the default is TRUE.
+#' @details Note that even if the tournament do not have home team or away team, you can still provide the match results
+#' according to the description above regardless of who is at home who is away. By selecting the home = FALSE,
+#' We duplicate the dataset, switch the home, away team and also the home, away result. Then this dataset will
+#' be attached to the original dataset and all home and away win's number will be divided by 2. MLE estimation of home effect
+#' is proved to be an exact 0.
+#' 
+#' The elimination of home effect by duplicating the original dataset will be less efficient than eliminate the home parameter
+#' directly in iterations. Since most games such as football, baseket ball have home effect and this method provides an idea of
+#' handling the case where some games have home effect and some games are played on neutral place, this method is applied here.
 #' @return 
 #' \item{dataframe}{dataframe for Bradley-Terry run}
 #' \item{ability}{Initial ability vector for iterations}
 #' \item{worstTeam}{The worst team whose ability can be set as 0 during any model's run}
 #' @export
-BTdataframe <- function(dataframe) {
+BTdataframe <- function(dataframe, home =TRUE) {
   
   
   ## Intitialize dataframe of match results for BTdecayLasso function
@@ -47,6 +57,17 @@ BTdataframe <- function(dataframe) {
   ability <- matrix(0, ncol = 1, nrow = (n + 1))
   colnames(ability) <- c("score")
   rownames(ability) <- c(team, "at.home")
+  
+  if (home == FALSE) {
+    df2 <- df
+    df2[, 1] <- df[, 2]
+    df2[, 2] <- df[, 1]
+    df2[, 3] <- df[, 4]
+    df2[, 4] <- df[, 3]
+    df <- rbind(df, df2)
+    df[, 3] <- df[, 3]/2
+    df[, 4] <- df[, 4]/2
+  }
   
   output <- list(dataframe = df, ability = ability, worstTeam = i0)
   output

@@ -32,8 +32,9 @@
 #' \item{Optimal.lambda}{The lambda where lowest score is attained}
 #' \item{Optimal.penalty}{The penalty (1- s/\eqn{\max(s)}) where lowest score is attained}
 #' \item{type}{Type of model selection method}
+#' \item{decay.rate}{Decay rate of this model}
 #' @seealso \code{\link{BTdataframe}} for dataframe initialization, 
-#' \code{\link{BTdecayLasso}} for Lasso path computation
+#' \code{\link{BTdecayLasso}} for obtaining a whole Lasso path
 #' @references 
 #' Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
 #' *The Annals of Applied Statistics* **6** 1949--1970.
@@ -44,11 +45,23 @@
 #' ##Initializing Dataframe
 #' x <- BTdataframe(NFL2010)
 #' 
+#' ##The following code runs the main results
+#' ##But they will not be run in R CMD check since these iterations are time-consuming
 #' \dontrun{
 #' ##Model selection through AIC
-#' z <- BTdecayLassoC(NFL$dataframe, NFL$ability, weight = NULL, 
+#' z <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, fixed = x$worstTeam,
 #'                    criteria = "AIC", type = "LASSO")
 #' summary(z)
+#' 
+#' ##If the whole Lasso path is run, we use it's result for model selection (recommended)
+#' ##Note that the decay.rate used in model selection should be consistent with
+#' ##the one which is used in whole Lasso path's run (keep the same model)
+#' y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
+#'                    decay.rate = 0.005, fixed = x$worstTeam)
+#'                    
+#' z1 <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, model = z1,
+#'                     decay.rate = 0.005,
+#'                     fixed = x$worstTeam, criteria = "BIC", type = "HYBRID")
 #' }
 #' 
 #' @export
@@ -87,8 +100,8 @@ BTdecayLassoC <- function(dataframe, ability, weight = NULL, criteria = "AIC", t
 
   if (type == "HYBRID") {
     
-    output <- list(Score = min(x), Optimal.degree = dg, Optimal.ability = Lp$HYBRID.ability.path[, ind], 
-                   Optimal.lambda = Lp$Lambda.path[ind], Optimal.penalty = Lp$penalty.path[ind], type = type)
+    output <- list(Score = min(x), Optimal.degree = dg, Optimal.ability = as.matrix(Lp$HYBRID.ability.path[, ind]), 
+                   Optimal.lambda = Lp$Lambda.path[ind], Optimal.penalty = Lp$penalty.path[ind], type = type, decay.rate = decay.rate)
     
   } else if (type == "LASSO") {
     
@@ -108,7 +121,7 @@ BTdecayLassoC <- function(dataframe, ability, weight = NULL, criteria = "AIC", t
     }
     
     if (j == 1) {
-      output <- list(Score = 2 * Lp$likelihood.path[ind] + dg * mul, Optimal.degree = dg, Optimal.ability = Lp$ability.path[, ind],
+      output <- list(Score = 2 * Lp$likelihood.path[ind] + dg * mul, Optimal.degree = dg, Optimal.ability = as.matrix(Lp$ability.path[, ind]),
                      Optimal.lambda = m0, Optimal.penalty = Lp$penalty.path[ind], type = type, decay.rate = decay.rate)
     } else {
       l <- BTLikelihood(dataframe, BT$ability, decay.rate = decay.rate)

@@ -4,7 +4,7 @@
 \alias{BTdataframe}
 \title{Dataframe initialization}
 \usage{
-BTdataframe(dataframe)
+BTdataframe(dataframe, home = TRUE)
 }
 \arguments{
 \item{dataframe}{Raw dataframe input, an example data "NFL2010" is attached in package for reference
@@ -14,6 +14,8 @@ Third column is the number of wins of home teams (if home team defeats away team
 Fourth column is the number of wins of away teams (if home team defeats away team, record 0 here, 1 otherwise).
 Fifth column is a scalar of time when the match is played until now (Time lag). Any time scale can be used here.
 "NFL2010" applies the unit of day.}
+
+\item{home}{Whether home effect will be considered, the default is TRUE.}
 }
 \value{
 \item{dataframe}{dataframe for Bradley-Terry run}
@@ -26,4 +28,14 @@ Dataframe initialization
 \details{
 Initial the raw dataframe and return an un-estimated ability vector and the worst
 team who loses most.
+
+Note that even if the tournament do not have home team or away team, you can still provide the match results
+according to the description above regardless of who is at home who is away. By selecting the home = FALSE,
+We duplicate the dataset, switch the home, away team and also the home, away result. Then this dataset will
+be attached to the original dataset and all home and away win's number will be divided by 2. MLE estimation of home effect
+is proved to be an exact 0.
+
+The elimination of home effect by duplicating the original dataset will be less efficient than eliminate the home parameter
+directly in iterations. Since most games such as football, baseket ball have home effect and this method provides an idea of
+handling the case where some games have home effect and some games are played on neutral place, this method is applied here.
 }

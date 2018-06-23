@@ -2,8 +2,9 @@ Package: BTdecayLasso
 Type: Package
 Title: Bradley-Terry Model with Exponential time Decayed log-likelihood and Adaptive Lasso
 Version: 0.1.0
-Author: Zhou Yunpeng, Xu Jinfeng
-Maintainer: Zhou Yunpeng <michael_zhou_hku@gmail.com>
+Authors@R: c(person("Yunpeng", "Zhou", email = "michael.zhou.hku@gmail.com", role = c("aut","cre")),
+             person("Jinfeng", "Xu", role = "aut"))
+Maintainer: Zhou Yunpeng <michael.zhou.hku@gmail.com>
 Description:  We apply Bradley-Terry Model to estimate teams' ability in paired comparison data. Exponential Decayed Likelihood function is applied for dynamic approximation of current rankings and Lasso penalty is applied for variance reduction and grouping.
 Imports: optimr, ggplot2, stats
 License: GPL (>= 2)

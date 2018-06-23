@@ -27,6 +27,7 @@ Bradley-Terry model fails to model the situation when a team wins or loses in al
 If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also casues the same problem.
 \item{ability}{Estimated ability scores}
 \item{convergence}{0 stands for convergent, 1 stands for not convergent}
+\item{decay.rate}{Decay rate of this model}
 }
 \description{
 Exponetial decay rate is applied to the likelihood function to achieve a better track of current abilities. When "decay.rate" is setting as 0,
