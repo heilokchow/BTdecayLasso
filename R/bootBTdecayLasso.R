@@ -61,7 +61,8 @@
 boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = NULL, decay.rate = 0, fixed = 1,
                               thersh = 1e-5, max = 100, iter = 100) {
   
-  if (!is.integer(boot) || boot < 2) {
+  boot <- round(boot)
+  if (boot < 2) {
     stop("Boot should be an integer greater than 1")
   }
   

@@ -44,14 +44,14 @@ The optimal model is selected using AIC criteria on HYBRID Lasso's run here.
 
 ``` r
 BTO <- BTdecayLassoC(NFL$dataframe, NFL$ability, decay.rate = 0.005, fixed = NFL$worstTeam,
-                     model = BTM, criterial = "AIC", type = "HYBRID")
+                     model = BTM, criteria = "AIC", type = "HYBRID")
 summary(BTO)
 ```
 
-Finally, we use bootstrapping to obtain the standard deviation of this choosen model with 500 times of simulation.
+Finally, we use bootstrapping to obtain the standard deviation of this choosen model with 100 times of simulation.
 
 ``` r
 BT <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, BTO$Optimal.lambda, decay.rate = 0.005, 
-                        fixed = NFL$worstTeam, boot = 500)
+                        fixed = NFL$worstTeam, boot = 100)
 summary(BT)
 ```
