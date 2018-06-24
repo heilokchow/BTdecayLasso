@@ -1,6 +1,6 @@
 Package: BTdecayLasso
 Type: Package
-Title: Bradley-Terry Model with Exponential Time Decayed Log-likelihood and Adaptive Lasso
+Title: Bradley-Terry Model with Exponential Time Decayed Log-Likelihood and Adaptive Lasso
 Version: 0.1.0
 Authors@R: c(person("Yunpeng", "Zhou", email = "michael.zhou.hku@gmail.com", role = c("aut","cre")),
              person("Jinfeng", "Xu", role = "aut"))
