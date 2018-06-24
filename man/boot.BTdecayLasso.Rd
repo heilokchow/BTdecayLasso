@@ -25,7 +25,7 @@ importance to most recent matches and the estimated parameters reflect more on r
 \item{fixed}{A teams index whose ability will be fixed as 0. The worstTeam's index
 can be generated using \code{\link{BTdataframe}} given raw data.}
 
-\item{thersh}{Thershold for convergency}
+\item{thersh}{Threshold for convergency}
 
 \item{max}{Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso).}
 

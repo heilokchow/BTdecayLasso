@@ -24,13 +24,13 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 List with class "BT" contains estimated abilities and convergent code, 0 stands for convergency reaches,
 1 stands for convergency not reaches. If 1 is returned, we suggest that decay rate should be set lower.
 Bradley-Terry model fails to model the situation when a team wins or loses in all matches.
-If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also casues the same problem.
+If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also causes the same problem.
 \item{ability}{Estimated ability scores}
 \item{convergence}{0 stands for convergent, 1 stands for not convergent}
 \item{decay.rate}{Decay rate of this model}
 }
 \description{
-Exponetial decay rate is applied to the likelihood function to achieve a better track of current abilities. When "decay.rate" is setting as 0,
+Exponential decay rate is applied to the likelihood function to achieve a better track of current abilities. When "decay.rate" is setting as 0,
 this is a standard Bradley-Terry Model whose estimated parameters are equivalent to package "BradleyTerry2".
 Further detailed description is attached in \code{\link{BTdecayLasso}}.
 }
@@ -41,7 +41,7 @@ The standard Bradley-Terry Model defines the winning probability of i against j,
 Given, a complete tournament's result. The objective likelihood function with an exponential decay rate is,
 \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
 where n is the number of matches, \eqn{\alpha} is the exponential decay rate and \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{t_{k}} is
-the time lag (time unti now). 
+the time lag (time until now). 
 This likelihood function is optimized using L-BFGS-B method with package \bold{optimr} and summary() function with S3 method can be applied to view the outputs.
 }
 \examples{
@@ -52,7 +52,7 @@ x <- BTdataframe(NFL2010)
 y <- BTdecay(x$dataframe, x$ability, decay.rate = 0, fixed = x$worstTeam)
 summary(y)
 
-##Dynamic approximation of current ability scores using exponetial decayed likelihood.
+##Dynamic approximation of current ability scores using exponential decayed likelihood.
 ##If we take decay.rate = 0.005
 ##Match happens one month before will weight exp(-0.15)=0.86 on log-likelihood function
 z <- BTdecay(x$dataframe, x$ability, decay.rate = 0.005, fixed = x$worstTeam)

@@ -48,7 +48,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 Model selection via AIC or BIC criteria. For Lasso estimators, the degree of freedom is the number of distinct groups of estimated abilities.
 }
 \details{
-This function is ususally run after the run of whole Lasso path. "model" parameter is obtained by whole
+This function is usually run after the run of whole Lasso path. "model" parameter is obtained by whole
 Lasso pass's run using \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
 
 Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood. ("HYBRID" is recommended)

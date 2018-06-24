@@ -50,10 +50,10 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 \description{
 Bradley-Terry model is applied for paired comparison data. Teams' ability score is estimated by maximizing log-likelihood function.
 
-To achieve a better track of current abilities, we apply an exponential decay rate to weight the log-likelohood function.
+To achieve a better track of current abilities, we apply an exponential decay rate to weight the log-likelihood function.
 The most current matches will weight more than previous matches. Parameter "decay.rate" in most functions of this package is used
-to set the amount of exponential decay rate. decay.rate should be non-negative and the approperate range of it depends on time scale in original dataframe.
-(see \code{\link{BTdataframe}} and parameter "dataframe"'s definaition of fifth column) For example,
+to set the amount of exponential decay rate. decay.rate should be non-negative and the appropriate range of it depends on time scale in original dataframe.
+(see \code{\link{BTdataframe}} and parameter "dataframe"'s definition of fifth column) For example,
 a unit of week with a "decay.rate" 0.007 is equivalent to the unit of day with "decay.rate" 0.001. Usually, for sports matches,
 if we take the unit of day, it's ranging from 0 to 0.01. The higher choice of "decay.rate", the better track of current teams' ability
 with a side effect of higher variance.
@@ -62,16 +62,16 @@ If "decay.rate" is too large, for example "0.1" with a unit of day, \eqn{\exp(-0
 one week ago and \eqn{\exp(-3.1)} = 0.05 suggests that previous matches took place one month ago will have little effect. Therefore, Only a few matches are
 accounted for ability's estimation. It will lead to a very high variance and uncertainty. Since standard Bradley-Terry model
 can not handle the case where there is a team who wins or loses all matches, such estimation may not provide convergent results. 
-Thus, if our estimation prodives divergent result, an error will be returned and we suggest user to chose a smaller "decay.rate"
+Thus, if our estimation provides divergent result, an error will be returned and we suggest user to chose a smaller "decay.rate"
 or adding more match results into the same modeling period.
 
-By default, the Adaptive Lasso is inplemeneted for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
+By default, the Adaptive Lasso is inplemented for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
 Apart from adaptive lasso, user can define own weight for different
 Lasso constriant \eqn{\left|\mu_{i}-\mu_{j}\right|} where \eqn{\mu_{i}} is team i's ability.
 
 Also by default, the whole Lasso path will be run. Similar to package "glmnet", user can provide their own choice of Lasso penalty "lambda" and determine whether the
 whole Lasso path will be run (since such run is time-consuming). However, we suggest that if user is not familiar with the actual relationship among
-lambda, the amount of peanty, the amount of shrinkage and grouping effect, a whole Lasso path should be run and selection of an
+lambda, the amount of penalty, the amount of shrinkage and grouping effect, a whole Lasso path should be run and selection of an
 approperiate lambda is done by AIC or BIC criteria using \code{\link{BTdecayLassoC}} (since this model is time related, cross-validation method cannot be applied). Also, users can
 use \code{\link{BTdecayLassoF}} to run with a specific Lasso penalty ranging from 0 to 1 (1 penalty means all estimators will shrink to 0).
 
@@ -86,12 +86,12 @@ According to \code{\link{BTdecay}}, the objective likelihood function to be opti
 \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
 The Lasso constraint is given as,
 \deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
-where \eqn{w_{ij}} are predifined weight. For Adaptive Lasso, \eqn{\left|w_{ij}=1/(\mu_{i}^{MLE}-\mu_{j}^{MLE})\right|}.
+where \eqn{w_{ij}} are predefined weight. For Adaptive Lasso, \eqn{\left|w_{ij}=1/(\mu_{i}^{MLE}-\mu_{j}^{MLE})\right|}.
 
-Maximiize this constraint objective function is equivalent to minimizing the following equation,
+Maximize this constraint objective function is equivalent to minimizing the following equation,
 \deqn{-l(\mu,\tau)+\lambda\sum_{i<j}w_{ij}|\mu_{i}-\mu_{j}|}
 Where \eqn{-l(\mu,\tau)} is taking negative value of objective function above.  Increase "lambda" will decrease "s", their relationship is
-monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "penalty" has a postive correlation.
+monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "penalty" has a positive correlation.
 }
 \examples{
 ##Initializing Dataframe

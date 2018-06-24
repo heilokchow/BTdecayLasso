@@ -17,7 +17,7 @@
 #' is proved to be an exact 0.
 #' 
 #' The elimination of home effect by duplicating the original dataset will be less efficient than eliminating the home parameter
-#' directly in iterations. Since most games such as football, baseket ball have home effect and this method provides an idea of
+#' directly in iterations. Since most games such as football, basketball have home effect and this method provides an idea of
 #' handling the case where some games have home effect and some games are played on neutral place, this method is applied here.
 #' @return 
 #' \item{dataframe}{dataframe for Bradley-Terry run}

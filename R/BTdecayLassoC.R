@@ -18,7 +18,7 @@
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
-#' This function is ususally run after the run of whole Lasso path. "model" parameter is obtained by whole
+#' This function is usually run after the run of whole Lasso path. "model" parameter is obtained by whole
 #' Lasso pass's run using \code{\link{BTdecayLasso}}. If no model is provided, this function will run Lasso path first (time-consuming).
 #' 
 #' Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood. ("HYBRID" is recommended)
