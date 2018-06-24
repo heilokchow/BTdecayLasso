@@ -47,7 +47,7 @@
 #' 
 #' ##The following code runs the main results
 #' ##But they will not be run in R CMD check since these iterations are time-consuming
-#' \dontrun{
+#' \donttest{
 #' ##Model selection through AIC
 #' z <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, fixed = x$worstTeam,
 #'                    criteria = "AIC", type = "LASSO")

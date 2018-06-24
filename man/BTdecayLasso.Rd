@@ -101,7 +101,7 @@ x <- BTdataframe(NFL2010)
 ##But they will not be run in R CMD check since these iterations are time-consuming
 ##Usually a single lambda's run will take 1-20 s
 ##The whole Adaptive Lasso run will take 5-20 min
-\dontrun{
+\donttest{
 ##BTdecayLasso run with exponential decay rate 0.005 and 
 ##lambda 0.1 on whole lasso path using adaptive lasso
 y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
