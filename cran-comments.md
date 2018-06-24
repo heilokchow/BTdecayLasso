@@ -8,7 +8,9 @@ There were no ERRORs or WARNINGs.
 There was 1 NOTE:
 
 * checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Yunpeng Zhou <michael.zhou.hku@gmail.com>'
+  Maintainer: 'Yunpeng Zhou <michael.zhou.hku@gmail.com>'
+
+  New submission
 
 This is my email address and this is my first submission.
 
