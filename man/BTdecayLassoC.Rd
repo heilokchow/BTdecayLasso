@@ -28,7 +28,7 @@ importance to most recent matches and the estimated parameters reflect more on r
 \item{fixed}{A teams index whose ability will be fixed as 0. The worstTeam's index
 can be generated using \code{\link{BTdataframe}} given raw data.}
 
-\item{thersh}{Threshold for convergency}
+\item{thersh}{Threshold for convergence}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 

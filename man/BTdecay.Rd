@@ -21,8 +21,8 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
 \value{
-List with class "BT" contains estimated abilities and convergent code, 0 stands for convergency reaches,
-1 stands for convergency not reaches. If 1 is returned, we suggest that decay rate should be set lower.
+List with class "BT" contains estimated abilities and convergent code, 0 stands for convergence reaches,
+1 stands for convergence not reaches. If 1 is returned, we suggest that decay rate should be set lower.
 Bradley-Terry model fails to model the situation when a team wins or loses in all matches.
 If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also causes the same problem.
 \item{ability}{Estimated ability scores}

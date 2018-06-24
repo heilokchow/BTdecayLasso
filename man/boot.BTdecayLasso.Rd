@@ -33,9 +33,9 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 }
 \value{
 A list with class "boot" contain Lasso and Hybrid Lasso's bootstrapping's mean and standard deviation.
-\item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
+\item{Lasso}{Lasso bootstrapping's result. A three column matrix where first column is the original estimation, the second column is bootstrapping mean and the last column is the
 bootstrapping standard deviation}
-\item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original dataset's estimation, the second column is bootstrapping mean and the last column is the
+\item{HYBRID.Lasso}{HYBRID Lasso bootstrapping's result. A three column matrix where the first column is the original estimation, the second column is bootstrapping mean and the last column is the
 bootstrapping standard deviation}
 }
 \description{
