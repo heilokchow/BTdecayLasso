@@ -21,8 +21,8 @@
 #' where n is the number of matches, \eqn{\alpha} is the exponential decay rate and \eqn{y_{ij}} takes 0 if i is defeated by j, 1 otherwise. \eqn{t_{k}} is
 #' the time lag (time until now). 
 #' This likelihood function is optimized using L-BFGS-B method with package \bold{optimr} and summary() function with S3 method can be applied to view the outputs.
-#' @return List with class "BT" contains estimated abilities and convergent code, 0 stands for convergency reaches,
-#' 1 stands for convergency not reaches. If 1 is returned, we suggest that decay rate should be set lower.
+#' @return List with class "BT" contains estimated abilities and convergent code, 0 stands for convergence reaches,
+#' 1 stands for convergence not reaches. If 1 is returned, we suggest that decay rate should be set lower.
 #' Bradley-Terry model fails to model the situation when a team wins or loses in all matches.
 #' If a high decay rate is considered, a team who only loses or wins 1 matches long time ago will also causes the same problem.
 #' \item{ability}{Estimated ability scores}

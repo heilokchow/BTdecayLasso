@@ -14,7 +14,7 @@
 #' importance to most recent matches and the estimated parameters reflect more on recent behaviour.
 #' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
 #' can be generated using \code{\link{BTdataframe}} given raw data.
-#' @param thersh Threshold for convergency
+#' @param thersh Threshold for convergence
 #' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
