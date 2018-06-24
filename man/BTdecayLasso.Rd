@@ -67,7 +67,7 @@ or adding more match results into the same modeling period.
 
 By default, the Adaptive Lasso is implemented for variance reduction and team's grouping. Adaptive Lasso is proved to have good grouping property.
 Apart from adaptive lasso, user can define own weight for different
-Lasso constriant \eqn{\left|\mu_{i}-\mu_{j}\right|} where \eqn{\mu_{i}} is team i's ability.
+Lasso constraint \eqn{\left|\mu_{i}-\mu_{j}\right|} where \eqn{\mu_{i}} is team i's ability.
 
 Also by default, the whole Lasso path will be run. Similar to package "glmnet", user can provide their own choice of Lasso penalty "lambda" and determine whether the
 whole Lasso path will be run (since such run is time-consuming). However, we suggest that if user is not familiar with the actual relationship among
@@ -84,7 +84,7 @@ In addition, summary() using S3 method can be applied to view the outputs.
 \details{
 According to \code{\link{BTdecay}}, the objective likelihood function to be optimized is,
 \deqn{\sum_{k=1}^{n}\sum_{i<j}\exp(-\alpha t_{k})\cdot(y_{ij}(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})-\log(1+\exp(\tau h_{ij}^{t_{k}}+\mu_{i}-\mu_{j})))}
-The Lasso constriant is given as,
+The Lasso constraint is given as,
 \deqn{\sum_{i<j}w_{ij}\left|\mu_{i}-\mu_{j}\right|\leq s}
 where \eqn{w_{ij}} are predefined weight. For Adaptive Lasso, \eqn{\left|w_{ij}=1/(\mu_{i}^{MLE}-\mu_{j}^{MLE})\right|}.
 
