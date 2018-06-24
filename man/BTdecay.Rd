@@ -55,6 +55,6 @@ summary(y)
 ##Dynamic approximation of current ability scores using exponetial decayed likelihood.
 ##If we take decay.rate = 0.005
 ##Match happens one month before will weight exp(-0.15)=0.86 on log-likelihood function
-z <- BTdecay(x$dataframe, x$ability, decay.rate = 0, fixed = x$worstTeam)
+z <- BTdecay(x$dataframe, x$ability, decay.rate = 0.005, fixed = x$worstTeam)
 summary(z)
 }

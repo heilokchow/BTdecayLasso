@@ -1,48 +1,62 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-BTdecayLasso
-============
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# BTdecayLasso
 
 [![Travis-CI Build Status](https://travis-ci.org/heilokchow/BTdecayLasso.svg?branch=master)](https://travis-ci.org/heilokchow/BTdecayLasso)
 
-Bradley-Terry model is used for ranking in sports tournament. Given the standard Bradley-Terry model, we use an exponential decay rate to weight its log-likelihood function and apply Lasso penalty to achieve a variance reduction and team grouping.
+Bradley-Terry model is used for ranking in sports tournament. Given the standard Bradley-Terry model,
+we use an exponential decay rate to weight its log-likelihood function and apply Lasso penalty to achieve
+a variance reduction and team grouping.
 
-Installation
-------------
+## Installation
 
 You can install BTdecayLasso from github with:
 
-``` r
+```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("heilokchow/BTdecayLasso")
 ```
 
-Example
--------
+## Example
 
 This is a basic example which shows you how to solve a common problem:
 
-First, given raw datasets (five columns are home teams, away teams, home wins, away wins, time until now), we convert this dataset into a dataframe which can be used for other function's input.
+First, given raw datasets (five columns are home teams, away teams, home wins, away wins, time until now),
+we convert this dataset into a dataframe which can be used for other function's input.
 
-``` r
+```{r eval = FALSE}
 NFL <- BTdataframe(NFL2010)
 ```
 
-Then, we comput the whole Lasso path for further analysis's use. In this example, to track the dynamically changing abilities, we set 'decay.rate' to be 0.005. A higher decay rate will give more unbiased results for current abilites' estimation with a side effect of higher variance.
+Then, we comput the whole Lasso path for further analysis's use. In this example, to track the dynamically
+changing abilities, we set 'decay.rate' to be 0.005. A higher decay rate will give more unbiased results for
+current abilites' estimation with a side effect of higher variance.
 
-``` r
+```{r eval = FALSE}
 BTM <- BTdecayLasso(NFL$dataframe, NFL$ability, decay.rate = 0.005, fixed = NFL$worstTeam)
 ```
 
 We can use 'plot' function to view the whole Lasso path.
 
-``` r
+```{r eval = FALSE}
 plot(BTM)
 ```
 
 The optimal model is selected using AIC criteria on HYBRID Lasso's run here.
 
-``` r
+```{r eval = FALSE}
 BTO <- BTdecayLassoC(NFL$dataframe, NFL$ability, decay.rate = 0.005, fixed = NFL$worstTeam,
                      model = BTM, criterial = "AIC", type = "HYBRID")
 summary(BTO)
@@ -50,8 +64,9 @@ summary(BTO)
 
 Finally, we use bootstrapping to obtain the standard deviation of this choosen model with 500 times of simulation.
 
-``` r
+```{r eval = FALSE}
 BT <- boot.BTdecayLasso(NFL$dataframe, NFL$ability, BTO$Optimal.lambda, decay.rate = 0.005, 
                         fixed = NFL$worstTeam, boot = 500)
 summary(BT)
 ```
+

@@ -29,13 +29,13 @@ Dataframe initialization
 Initial the raw dataframe and return an un-estimated ability vector and the worst
 team who loses most.
 
-Note that even if the tournament do not have home team or away team, you can still provide the match results
-according to the description above regardless of who is at home who is away. By selecting the home = FALSE,
-We duplicate the dataset, switch the home, away team and also the home, away result. Then this dataset will
+Note that even if the tournament does not have any home team or away team, you can still provide the match results
+according to the description above regardless of who is at home and who is away. By selecting the home = FALSE,
+We duplicate the dataset, switch the home, away teams and also the home, away match results. Then this dataset will
 be attached to the original dataset and all home and away win's number will be divided by 2. MLE estimation of home effect
 is proved to be an exact 0.
 
-The elimination of home effect by duplicating the original dataset will be less efficient than eliminate the home parameter
+The elimination of home effect by duplicating the original dataset will be less efficient than eliminating the home parameter
 directly in iterations. Since most games such as football, baseket ball have home effect and this method provides an idea of
 handling the case where some games have home effect and some games are played on neutral place, this method is applied here.
 }
