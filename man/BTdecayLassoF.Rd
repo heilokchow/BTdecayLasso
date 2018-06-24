@@ -55,7 +55,6 @@ summary() function can be applied to view the outputs.
 x <- BTdataframe(NFL2010)
 
 ##The following code runs the main results
-##But they will not be run in R CMD check since these iterations are time-consuming
 \donttest{
 ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
 y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, 

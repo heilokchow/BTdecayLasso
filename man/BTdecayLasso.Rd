@@ -98,7 +98,6 @@ monotone. Here, we define "penalty" as \eqn{1-s/\max(s)}. Thus, "lambda" and "pe
 x <- BTdataframe(NFL2010)
 
 ##The following code runs the main results
-##But they will not be run in R CMD check since these iterations are time-consuming
 ##Usually a single lambda's run will take 1-20 s
 ##The whole Adaptive Lasso run will take 5-20 min
 \donttest{

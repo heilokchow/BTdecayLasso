@@ -39,7 +39,6 @@
 #' x <- BTdataframe(NFL2010)
 #' 
 #' ##The following code runs the main results
-#' ##But they will not be run in R CMD check since these iterations are time-consuming
 #' \donttest{
 #' ##Run Lasso estimate for whole Lasso path
 #' z <- BTdecayLasso(x$dataframe, x$ability, fixed = x$worstTeam)
