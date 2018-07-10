@@ -166,8 +166,10 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
     while (degree0 < (n - 1)) {
       stop <- 0
       while (stop==0) {
-        ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda1, 
-                                      decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        ##ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda1, 
+        ##                              decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        ability <- BTdecay.Qua(dataframe, ability, theta, v, Lagrangian, decay.rate = decay.rate,
+                               fixed = fixed, iter = iter)
         theta <- BTtheta(ability, weight, Lagrangian, v, lambda1)
         Lagrangian0 <- BTLagrangian(Lagrangian, ability, theta, v)
         k <- sum(abs(Lagrangian0 - Lagrangian))
@@ -221,7 +223,7 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
       
       slambda <- c(slambda, lambda1)
       
-      if (degree > (degree0 + 1) && abs(lambda0 - lambda1) > thersh) {
+      if (degree > (degree0 + 1) && abs(lambda0 - lambda1) > (thersh * 10)) {
         lambda1 <- (lambda0 + lambda1)/2
       } else {
         lambda0 <- lambda1
@@ -236,8 +238,10 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
     for (i in 1:length(lambda)) {
       stop <- 0
       while (stop==0) {
-        ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda[i], 
-                                      decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        ##ability <- BTdecayLasso.step1(dataframe, ability, weight, Lagrangian, theta, v, lambda[i], 
+        ##                              decay.rate = decay.rate, fixed = fixed, thersh = thersh, iter = iter)
+        ability <- BTdecay.Qua(dataframe, ability, theta, v, Lagrangian, decay.rate = decay.rate,
+                               fixed = fixed, iter = iter)
         theta <- BTtheta(ability, weight, Lagrangian, v, lambda[i])
         Lagrangian0 <- BTLagrangian(Lagrangian, ability, theta, v)
         k <- sum(abs(Lagrangian0 - Lagrangian))
