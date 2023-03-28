@@ -3,12 +3,9 @@
 
 # BTdecayLasso
 
-[![Travis-CI Build
-Status](https://travis-ci.org/heilokchow/BTdecayLasso.svg?branch=master)](https://travis-ci.org/heilokchow/BTdecayLasso)
 [![CRAN](http://www.r-pkg.org/badges/version/BTdecayLasso)](https://cran.r-project.org/package=BTdecayLasso)
-[![Downloads](https://cranlogs.r-pkg.org/badges/BTdecayLasso)](https://cran.r-project.org/package=BTdecayLasso)
-[![Last
-Commit](https://img.shields.io/github/last-commit/heilokchow/BTdecayLasso)](https://github.com/heilokchow/BTdecayLasso)
+[![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/BTdecayLasso)](https://cran.r-project.org/package=BTdecayLasso)
+[![Last Commit](https://img.shields.io/github/last-commit/heilokchow/BTdecayLasso)](https://github.com/heilokchow/BTdecayLasso)
 
 Bradley-Terry model is used for ranking in sports tournament. Given the
 standard Bradley-Terry model, we use an exponential decay rate to weight
