@@ -15,7 +15,7 @@
 #' @param fixed A teams index whose ability will be fixed as 0. The worstTeam's index
 #' can be generated using \code{\link{BTdataframe}} given raw data.
 #' @param thersh Threshold for convergence
-#' @param max Maximum weight for w_{ij} (weight used for Adaptive Lasso)
+#' @param max Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso)
 #' @param iter Number of iterations used in L-BFGS-B algorithm.
 #' @details
 #' The estimated ability given fixed penalty \eqn{p = 1- s/\max(s)} where s is the sum of Lasso penalty part.
@@ -38,17 +38,6 @@
 #' 
 #' Zou, H. (2006) The adaptive lasso and its oracle properties. 
 #' *J.Amer.Statist.Assoc* **101** 1418--1429.
-#' @examples
-#' ##Initializing Dataframe
-#' x <- BTdataframe(NFL2010)
-#' 
-#' ##The following code runs the main results
-#'\donttest{
-#' ##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
-#' y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, 
-#'                    fixed = x$worstTeam)
-#' summary(y)
-#' }
 #' 
 #' @export
 

@@ -4,8 +4,18 @@
 \alias{boot.BTdecayLasso}
 \title{Compute the standard deviation of Bradley-Terry decay Lasso model by bootstrapping}
 \usage{
-boot.BTdecayLasso(dataframe, ability, lambda, boot = 100, weight = NULL,
-  decay.rate = 0, fixed = 1, thersh = 1e-05, max = 100, iter = 100)
+boot.BTdecayLasso(
+  dataframe,
+  ability,
+  lambda,
+  boot = 100,
+  weight = NULL,
+  decay.rate = 0,
+  fixed = 1,
+  thersh = 1e-05,
+  max = 100,
+  iter = 100
+)
 }
 \arguments{
 \item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
@@ -49,27 +59,6 @@ is time consuming and usually 1000 time of simulations is enough to provide a st
 More detailed description of "lambda", "penalty" and "weight" are documented in \code{\link{BTdecayLasso}}.
 
 summary() function follows S3 method can be applied to view the outputs.
-}
-\examples{
-##Initialize the dataframe and ability
-x <- BTdataframe(NFL2010)
-
-##The following code runs the main results
-\donttest{
-##Run Lasso estimate for whole Lasso path
-z <- BTdecayLasso(x$dataframe, x$ability, fixed = x$worstTeam)
-
-##Model selection using AIC with Lasso's likelihood
-z1 <- BTdecayLassoC(x$dataframe, x$ability, model = z, 
-                    criteria = "AIC", type = "LASSO", fixed = x$worstTeam)
-
-##Bootstrapping for model with lowest AIC score for 100 times.
-##Note that the decay.rate used in model selection should be consistent with
-##the one which is used in whole Lasso path's run (keep the same model)
-z2 <- boot.BTdecayLasso(x$dataframe, x$ability, lambda = z1$Optimal.lambda, 
-                        boot = 100, fixed = x$worstTeam)
-}
-
 }
 \references{
 Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 

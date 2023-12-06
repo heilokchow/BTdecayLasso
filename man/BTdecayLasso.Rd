@@ -4,9 +4,18 @@
 \alias{BTdecayLasso}
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and Adaptive Lasso}
 \usage{
-BTdecayLasso(dataframe, ability, lambda = NULL, weight = NULL,
-  path = TRUE, decay.rate = 0, fixed = 1, thersh = 1e-05, max = 100,
-  iter = 100)
+BTdecayLasso(
+  dataframe,
+  ability,
+  lambda = NULL,
+  weight = NULL,
+  path = TRUE,
+  decay.rate = 0,
+  fixed = 1,
+  thersh = 1e-05,
+  max = 100,
+  iter = 100
+)
 }
 \arguments{
 \item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
@@ -28,7 +37,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{thersh}{Threshold for convergence used for Augmented Lagrangian Method.}
 
-\item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
+\item{max}{Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso)}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
@@ -102,8 +111,8 @@ x <- BTdataframe(NFL2010)
 ##The whole Adaptive Lasso run will take 5-20 min
 \donttest{
 ##BTdecayLasso run with exponential decay rate 0.005 and 
-##lambda 0.1 on whole lasso path using adaptive lasso
-y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
+##lambda 0.1, use path = TRUE if you want to run whole LASSO path
+y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, path = FALSE,
                    decay.rate = 0.005, fixed = x$worstTeam)
 summary(y1)
 
@@ -113,6 +122,7 @@ summary(y1)
 ##(evolving of distinct ability scores), it may take a much longer time. 
 ##We recommend the user to apply the default setting,
 ##where Adaptive Lasso will be run.
+
 n <- nrow(x$ability) - 1
 w2 <- matrix(1, nrow = n, ncol = n)
 w2[lower.tri(w2, diag = TRUE)] <- 0
@@ -121,15 +131,7 @@ w2[lower.tri(w2, diag = TRUE)] <- 0
 y2 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, 
                    path = FALSE, decay.rate = 0.005, fixed = x$worstTeam)
 
-##BTdecayLasso run with exponential decay rate 0.005 and with a specific lambda 0.1
-##Time-consuming
-y3 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, weight = w2, 
-                   path = TRUE, decay.rate = 0.005, fixed = x$worstTeam)
 summary(y2)
-
-##Plot the Lasso path (S3 method)
-plot(y1)
-plot(y3)
 }
 
 }

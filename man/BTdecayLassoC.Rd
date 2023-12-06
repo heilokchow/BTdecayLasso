@@ -4,9 +4,19 @@
 \alias{BTdecayLassoC}
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and weighted Lasso with AIC or BIC criteria}
 \usage{
-BTdecayLassoC(dataframe, ability, weight = NULL, criteria = "AIC",
-  type = "HYBRID", model = NULL, decay.rate = 0, fixed = 1,
-  thersh = 1e-05, iter = 100, max = 100)
+BTdecayLassoC(
+  dataframe,
+  ability,
+  weight = NULL,
+  criteria = "AIC",
+  type = "HYBRID",
+  model = NULL,
+  decay.rate = 0,
+  fixed = 1,
+  thersh = 1e-05,
+  iter = 100,
+  max = 100
+)
 }
 \arguments{
 \item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
@@ -32,7 +42,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 
-\item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
+\item{max}{Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso)}
 }
 \value{
 \item{Score}{Lowest AIC or BIC score}
@@ -54,29 +64,6 @@ Lasso pass's run using \code{\link{BTdecayLasso}}. If no model is provided, this
 Users can select the information score added to HYBRID Lasso's likelihood or original Lasso's likelihood. ("HYBRID" is recommended)
 
 summary() function can be applied to view the outputs.
-}
-\examples{
-##Initializing Dataframe
-x <- BTdataframe(NFL2010)
-
-##The following code runs the main results
-\donttest{
-##Model selection through AIC
-z <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, fixed = x$worstTeam,
-                   criteria = "AIC", type = "LASSO")
-summary(z)
-
-##If the whole Lasso path is run, we use it's result for model selection (recommended)
-##Note that the decay.rate used in model selection should be consistent with
-##the one which is used in whole Lasso path's run (keep the same model)
-y1 <- BTdecayLasso(x$dataframe, x$ability, lambda = 0.1, 
-                   decay.rate = 0.005, fixed = x$worstTeam)
-                   
-z1 <- BTdecayLassoC(x$dataframe, x$ability, weight = NULL, model = z1,
-                    decay.rate = 0.005,
-                    fixed = x$worstTeam, criteria = "BIC", type = "HYBRID")
-}
-
 }
 \references{
 Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 

@@ -41,7 +41,7 @@
 #' ##Match happens one month before will weight exp(-0.15)=0.86 on log-likelihood function
 #' z <- BTdecay(x$dataframe, x$ability, decay.rate = 0.005, fixed = x$worstTeam)
 #' summary(z)
-#' @import optimr
+#' @import optimx
 #' @export
 
 BTdecay <- function(dataframe, ability, decay.rate = 0, fixed = 1, iter = 100){
@@ -114,7 +114,7 @@ BTdecay <- function(dataframe, ability, decay.rate = 0, fixed = 1, iter = 100){
     Grad
   }
   
-  xa <- optimr::optimr(rep(0, n + 1), fn, gr = gr, method = "L-BFGS-B", control = list(maxit = iter))
+  xa <- optimx::optimr(rep(0, n + 1), fn, gr = gr, method = "L-BFGS-B", control = list(maxit = iter))
   
   ability[, 1] <- xa$par - xa$par[fixed]
   ability[n + 1, 1] <- xa$par[n + 1]

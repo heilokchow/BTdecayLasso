@@ -1,27 +1,20 @@
-## Resubmission
-This is a resubmission. In this version I have:
+## Update the package
+Update the package to change the import package from "optimr" to "optimx". In addition, I change the maintainer's email address. 
 
-* Change the reference format in DESCRIPTION file to authors (year) <doi:...>
-
-* Replace \dontrun{} by \donttest{} for examples which take more than 5 sec per Rd-file
-
-## Test environments
-* local Windows 10 install, R 3.5.0
-* ubuntu 12.04 (on travis-ci), R 3.5.0
-
-## R CMD check results
-There were no ERRORs or WARNINGs.
-
-There was 1 NOTE:
+1 Note from win-builder: Masarotto and Varin are names
 
 * checking CRAN incoming feasibility ... NOTE
-  Maintainer: 'Yunpeng Zhou <michael.zhou.hku@gmail.com>'
+Maintainer: 'Yunpeng Zhou <u3514104@connect.hku.hk>'
 
-  New submission
+New submission
 
-This is my email address and this is my first submission.
+Package was archived on CRAN
 
-## Downstream dependencies
-I have also run R CMD check on downstream dependencies of optimr and ggplot2
+Possibly misspelled words in DESCRIPTION:
+  Masarotto (8:336)
+  Varin (8:350)
 
-There were no ERRORs or WARNINGs
+CRAN repository db overrides:
+  X-CRAN-Comment: Archived on 2023-10-29 as requires archived package
+    'optimr'.
+

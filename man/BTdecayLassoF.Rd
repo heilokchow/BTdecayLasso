@@ -4,8 +4,16 @@
 \alias{BTdecayLassoF}
 \title{Bradley-Terry Model with Exponential Decayed weighted likelihood and Adaptive Lasso with a given penalty rate}
 \usage{
-BTdecayLassoF(dataframe, ability, penalty, decay.rate = 0, fixed = 1,
-  thersh = 1e-05, max = 100, iter = 100)
+BTdecayLassoF(
+  dataframe,
+  ability,
+  penalty,
+  decay.rate = 0,
+  fixed = 1,
+  thersh = 1e-05,
+  max = 100,
+  iter = 100
+)
 }
 \arguments{
 \item{dataframe}{Generated using \code{\link{BTdataframe}} given raw data.}
@@ -23,7 +31,7 @@ can be generated using \code{\link{BTdataframe}} given raw data.}
 
 \item{thersh}{Threshold for convergence}
 
-\item{max}{Maximum weight for w_{ij} (weight used for Adaptive Lasso)}
+\item{max}{Maximum weight for \eqn{w_{ij}} (weight used for Adaptive Lasso)}
 
 \item{iter}{Number of iterations used in L-BFGS-B algorithm.}
 }
@@ -49,19 +57,6 @@ When p = 1, all ability scores are shrinking to 0.
 The parameter "penalty" should be ranging from 0.01 to 0.99 due to the iteration's convergent error.
 
 summary() function can be applied to view the outputs.
-}
-\examples{
-##Initializing Dataframe
-x <- BTdataframe(NFL2010)
-
-##The following code runs the main results
-\donttest{
-##BTdecayLasso run with exponential decay rate 0.005 and Lasso penaty 0.5
-y <- BTdecayLassoF(x$dataframe, x$ability, 0.5, decay.rate = 0.005, 
-                   fixed = x$worstTeam)
-summary(y)
-}
-
 }
 \references{
 Masarotto, G. and Varin, C.(2012) The Ranking Lasso and its Application to Sport Tournaments. 
