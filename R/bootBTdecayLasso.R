@@ -62,7 +62,6 @@ boot.BTdecayLasso <- function(dataframe, ability, lambda, boot = 100, weight = N
   t <- exp(Tability[n + 1] + y1 - y2)
   y <- t/(1 + t)
   
-  set.seed(271)
   dataframe1 <- dataframe
   for (i in 1:boot) {
     

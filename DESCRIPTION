@@ -4,7 +4,7 @@ Title: Bradley-Terry Model with Exponential Time Decayed Log-Likelihood and Adap
 Version: 0.1.1
 Authors@R: c(person("Yunpeng", "Zhou", email = "u3514104@connect.hku.hk", role = c("aut","cre")),
              person("Jinfeng", "Xu", role = "aut"))
-Description: We apply Bradley-Terry Model to estimate teams' ability in paired comparison data. Exponential Decayed Log-likelihood function is applied for dynamic approximation of current rankings and Lasso penalty is applied for variance reduction and grouping. The main algorithm applies the Augmented Lagrangian Method described by Masarotto and Varin (2012) <doi:10.1214/12-AOAS581>.
+Description: We utilize the Bradley-Terry Model to estimate the abilities of teams using paired comparison data. For dynamic approximation of current rankings, we employ the Exponential Decayed Log-likelihood function, and we also apply the Lasso penalty for variance reduction and grouping. The main algorithm applies the Augmented Lagrangian Method described by Masarotto and Varin (2012) <doi:10.1214/12-AOAS581>.
 Imports: optimx, ggplot2, stats
 License: GPL (>= 2)
 LazyData: true

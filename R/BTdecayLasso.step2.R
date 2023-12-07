@@ -25,7 +25,6 @@ BTdecayLasso.step2 <- function(dataframe, ability, lambda, weight, decay.rate = 
     j <- j + 1
     con <- rbind(con, matrix(c(k, s, v, j), nrow = 1, ncol = 4))
   }
-  cat(s,'\n')
   
   ability0 <- ability
   ability0[, 1] <- 0

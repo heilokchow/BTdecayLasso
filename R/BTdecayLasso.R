@@ -175,7 +175,6 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
         s0 <- penaltyAmount(ability, weight)
       }
       
-      cat(s0, '\n')
       p0 <- s0/s1
       ability0 <- cbind(ability0, ability)
       l0 <- BTLikelihood(dataframe, ability, decay.rate = decay.rate)
@@ -247,7 +246,6 @@ BTdecayLasso <- function(dataframe, ability, lambda = NULL, weight = NULL, path 
         s0 <- penaltyAmount(ability, weight)
       }
       
-      cat(s0, '\n')
       p0 <- s0/s1
       ability0 <- cbind(ability0, ability)
       l0 <- BTLikelihood(dataframe, ability, decay.rate = decay.rate)
